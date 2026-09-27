@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>live — e/halve</title>
+<meta name="description" content="Every number on this page comes from the same accounts the program itself reads before a tick fires. Nothing here is computed off to the side or cached with a delay worth mentioning — it's the clock's own state, read the same way the program reads it.">
+<meta name="theme-color" content="#f3eee3">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-page="live">
+<a class="skip" href="#main">skip to content</a>
+<header class="bar">
+  <nav class="bar__inner" aria-label="sections">
+    <a class="brand" href="/">e<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live" aria-current="page">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li><li><a href="https://github.com/" rel="external noopener" target="_blank" data-github>github</a></li></ul>
+    <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
+  </nav>
+</header>
+<main id="main" class="page">
+<header class="head col">
+  <p class="path">~/e-halve/<b>live</b></p>
+  <h1>LIVE</h1>
+  <p class="lede">Every number on this page comes from the same accounts the program itself reads before a tick fires. Nothing here is computed off to the side or cached with a delay worth mentioning — it's the clock's own state, read the same way the program reads it.</p>
+</header>
+
+<div class="col"><div class="statusline wide" data-status>
+  <span><span class="dot" aria-hidden="true"></span>slot <b data-slot>—</b></span>
+  <span>read <b data-read>—</b></span>
+  <span>tick_count <b data-v="tick_count">—</b></span>
+  <span>roster_len <b data-v="roster_len">—</b></span>
+</div>
+<div class="tbl-wrap wide" style="margin-top:0"><table class="state" data-state>
+<thead><tr><th>field</th><th>value</th><th>reads</th></tr></thead>
+<tbody>
+<tr data-k="mass"><td>mass</td><td class="v" data-val="mass">—</td><td class="d">current SOL sitting in the clock, unticked</td></tr>
+<tr data-k="outbound"><td>outbound</td><td class="v" data-val="outbound">—</td><td class="d">USDC in the outbound vault, awaiting settlement</td></tr>
+<tr data-k="burned in total"><td>burned in total</td><td class="v" data-val="burned in total">—</td><td class="d">cumulative tokens burned since genesis</td></tr>
+<tr data-k="paid in total"><td>paid in total</td><td class="v" data-val="paid in total">—</td><td class="d">cumulative USDC paid out since genesis</td></tr>
+<tr data-k="cursor"><td>cursor</td><td class="v" data-val="cursor">—</td><td class="d">current position in the roster ring</td></tr>
+<tr data-k="era"><td>era</td><td class="v" data-val="era">—</td><td class="d">current era number</td></tr>
+<tr data-k="burn share"><td>burn share</td><td class="v" data-val="burn share">—</td><td class="d">current <code>burn_bps</code>, halves each era, floors at 100 bps</td></tr>
+<tr data-k="next era"><td>next era</td><td class="v" data-val="next era">—</td><td class="d">time remaining until advance can be called</td></tr>
+</tbody></table></div></div>
+
+<div class="col reveal" style="padding-top:1.5rem"><p>Mass is what the clock is currently holding, unticked. It only grows through <code>claim_fees</code> and only shrinks through a tick, so between ticks this number is a direct measure of how much fee volume has landed since the last one fired. Outbound is the mirror of that on the payout side — USDC sitting in the outbound vault, written by ticks, released only by settle. If outbound is growing faster than paid, orders are backing up faster than the hand is clearing them.</p>
+<p>Burned in total and paid in total are running sums, not snapshots — every tick adds to burned, every settled order adds to paid. Together they're the whole history of the split in two numbers: how much scarcer the coin has gotten against how many real dollars have actually reached followers.</p>
+<p>Cursor and era describe where the mechanism is in its own cycle. Cursor is a position on the roster ring — it tells you whose turn is coming, not just that the ball has been rolling. Era is a plain count, but it's the number that decides everything about the current split: burn share is derived from it directly, halving each time advance is called, floored at 100 bps so burning never fully stops. Next era is the honest version of "when does this change" — the time remaining until advance becomes callable, not a promise about when someone will actually call it.</p></div>
+
+<div class="col"><div class="tbl-wrap wide"><table class="rules">
+<thead><tr><th>rule</th><th>detail</th></tr></thead>
+<tbody>
+<tr><td>mass</td><td>state.unticked_balance, live</td></tr>
+<tr><td>outbound</td><td>outbound vault balance, live</td></tr>
+<tr><td>burned in total</td><td>sum of burned_tokens across every tick</td></tr>
+<tr><td>paid in total</td><td>sum of settled order amounts across every order</td></tr>
+<tr><td>cursor</td><td>state.cursor</td></tr>
+<tr><td>era</td><td>state.era_start, derived</td></tr>
+<tr><td>burn share</td><td>10000 / 2^era, floored at 100</td></tr>
+<tr><td>next era</td><td>max(0, era_start + 4 weeks - now)</td></tr>
+</tbody></table></div></div>
+</main>
+<footer class="foot">
+  <span>e/halve</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/program">program</a></nav>
+</footer>
+<script src="/assets/data/state.js"></script>
+<script src="/assets/site.js" defer></script>
+<script src="/assets/js/live.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>orders — e/halve</title>
+<meta name="description" content="Every payment starts as an order, and every order starts as an account the program writes during a tick — never before, never after.">
+<meta name="theme-color" content="#f3eee3">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-page="orders">
+<a class="skip" href="#main">skip to content</a>
+<header class="bar">
+  <nav class="bar__inner" aria-label="sections">
+    <a class="brand" href="/">e<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders" aria-current="page">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li><li><a href="https://github.com/" rel="external noopener" target="_blank" data-github>github</a></li></ul>
+    <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
+  </nav>
+</header>
+<main id="main" class="page">
+<header class="head col">
+  <p class="path">~/e-halve/<b>orders</b></p>
+  <h1>ORDERS</h1>
+  <p class="lede">Every payment starts as an order, and every order starts as an account the program writes during a tick — never before, never after. An order names a handle by hash, an amount in cents, and the tick it came from. It opens the moment it's written. From there it can only move to one of two places: settled, once the hand pays it and proves it, or void, if the handle unfollows before that happens.</p>
+</header>
+
+<div class="col"><figure class="fig wide" id="fig-states" aria-label="order states">
+  <pre class="ascii" data-machine></pre>
+  <div class="step" data-step aria-live="polite"></div>
+  <figcaption class="fig__cap"><span><b>fig. 1</b> &nbsp;open → settled, or open → void</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
+</figure>
+<div class="chips wide" role="group" aria-label="filter by status"><span>status</span>
+  <button class="btn" type="button" data-filter="all" aria-pressed="true">all</button>
+  <button class="btn" type="button" data-filter="open" aria-pressed="false">open</button>
+  <button class="btn" type="button" data-filter="settled" aria-pressed="false">settled</button>
+  <button class="btn" type="button" data-filter="void" aria-pressed="false">void</button>
+</div>
+<div class="tbl-wrap wide data" data-orders><table><thead></thead><tbody></tbody></table></div>
+<div class="tbl-foot wide"><span data-orders-count></span><button class="btn" type="button" data-more>show 30 more</button></div></div>
+
+<div class="col reveal"><p>There's no expiry on an order. Most systems that write payment obligations onchain put a clock on them — claim within some window or forfeit. This one doesn't, because the obligation isn't the follower's to chase. An order stays open for as long as it takes the hand to get to it, and the roster proves at any later point whether the handle was still eligible when the order was written, so there's no ambiguity to resolve by expiring things early.</p>
+<p>Void is the only way cents come back to the clock outside of a tick itself. If a handle unfollows while their order is still open, the order is marked void and its cents return to the clock's outbound balance, ready to be spent by the next tick instead of sitting stuck against an obligation nobody can collect. This only happens pre-payment — once an order is settled, it's a historical record, not a claim, and nothing about it changes afterward.</p>
+<p>Settlement is one-directional and one-way-checked. The hand calls settle with a payment post id, the program marks the order settled, and the cents leave the outbound vault. The order itself doesn't verify that the payment actually reached the right handle for the right amount — that verification lives on the hand page instead, where every settle call is checked against the order it claims to be paying. Splitting the two apart is deliberate: an order is a fact about what's owed, settlement is a fact about what happened, and conflating them would make it harder to catch a hand that pays wrong.</p></div>
+
+<div class="col"><dl class="gloss ">
+<div><dt>tick_index, position</dt><dd>which tick this order came from, and where in that tick's window</dd></div>
+<div><dt>handle_hash</dt><dd>the handle this order is owed to</dd></div>
+<div><dt>amount</dt><dd>the amount, in cents</dd></div>
+<div><dt>status</dt><dd>open, settled, or void</dd></div>
+<div><dt>payment_post_id</dt><dd>the X Money post proving payment, once settled</dd></div>
+</dl>
+<div class="tbl-wrap wide"><table class="rules">
+<thead><tr><th>rule</th><th>detail</th></tr></thead>
+<tbody>
+<tr data-step="1"><td>created</td><td>written once, during a tick, for one window position</td></tr>
+<tr><td>key</td><td>pda ["order", tick_index, position]</td></tr>
+<tr data-step="1"><td>open</td><td>default state, no expiry</td></tr>
+<tr data-step="2"><td>settled</td><td>hand calls settle with a payment_post_id, cents leave the outbound vault</td></tr>
+<tr data-step="3"><td>void</td><td>only if the handle unfollows before settlement, cents return to the clock</td></tr>
+<tr data-step="2"><td>immutable after settlement</td><td>a settled order is a record, not a claim, and does not change again</td></tr>
+</tbody></table></div></div>
+</main>
+<footer class="foot">
+  <span>e/halve</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/program">program</a></nav>
+</footer>
+<script src="/assets/data/state.js"></script>
+<script src="/assets/data/orders.js" defer></script>
+<script src="/assets/site.js" defer></script>
+<script src="/assets/js/orders.js" defer></script>
+</body>
+</html>

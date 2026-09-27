@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hand — e/halve</title>
+<meta name="description" content="Every other page on this site describes a rule the program enforces on-chain.">
+<meta name="theme-color" content="#f3eee3">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-page="hand">
+<a class="skip" href="#main">skip to content</a>
+<header class="bar">
+  <nav class="bar__inner" aria-label="sections">
+    <a class="brand" href="/">e<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand" aria-current="page">hand</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li><li><a href="https://github.com/" rel="external noopener" target="_blank" data-github>github</a></li></ul>
+    <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
+  </nav>
+</header>
+<main id="main" class="page">
+<header class="head col">
+  <p class="path">~/e-halve/<b>hand</b></p>
+  <h1>HAND</h1>
+  <p class="lede">Every other page on this site describes a rule the program enforces on-chain. This one is different — it's the one place a human is actually in the loop, so it's also the one page that exists specifically to make that human checkable instead of trusted.</p>
+</header>
+
+<div class="col"><div class="statusline wide" data-hand-status>
+  <span>wallet <b data-hand-wallet>—</b></span>
+  <span>settle calls <b data-hand-calls>—</b></span>
+  <span>open <b data-hand-open>—</b></span>
+  <span>unmatched <b data-hand-bad>—</b></span>
+</div>
+<p>The hand can do exactly one thing: call settle on an order that already exists, with a <code>payment_post_id</code> proving the payment happened. It cannot create an order, cannot choose who gets paid, cannot decide an amount — those are all written by a tick before the hand ever sees them. What the hand actually controls is narrower than it might sound: not whether someone gets paid, but when the hand gets around to clearing an order that's already sitting open.</p>
+<p>That's exactly why this page exists. "The hand has no discretion" is a claim made on the how page — this page is where that claim becomes something you can check instead of take on faith. Every settle call the hand has ever made is listed here, and each one is matched against the order it claims to be paying: same handle, same amount, same <code>tick_index</code> and position. If a settle call doesn't match an order that was genuinely open at the time, that's visible here, not buried in a transaction log nobody reads.</p>
+<figure class="fig wide" id="fig-match" aria-label="match check for the newest settle call">
+  <div class="match" data-match></div>
+  <figcaption class="fig__cap"><span><b>fig. 1</b> &nbsp;newest settle call, match check</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
+</figure>
+<div class="tbl-wrap wide data" data-settles><table><thead></thead><tbody></tbody></table></div>
+<div class="tbl-foot wide"><span data-settles-count></span><button class="btn" type="button" data-more>show 30 more</button></div></div>
+
+<div class="col reveal"><p>This also means the hand's job is slow money moving, not fast judgment. A backlog of open orders on this page isn't a sign anything is broken — it's a queue, and the roster and tick history both remain intact regardless of how quickly the hand clears it. What would be a problem is a settle call with no matching order behind it, which is the one thing this page is built to make impossible to hide.</p></div>
+
+<div class="col"><div class="tbl-wrap wide data" data-backlog><table><thead></thead><tbody></tbody></table></div>
+<div class="tbl-foot wide"><span data-backlog-count></span><span></span></div>
+<dl class="gloss ">
+<div><dt>wallet</dt><dd>the hand's onchain address</dd></div>
+<div><dt>settle calls</dt><dd>every settle this wallet has ever made</dd></div>
+<div><dt>matched order</dt><dd>the order each settle call claims to be paying</dd></div>
+<div><dt>match check</dt><dd>handle, amount, <code>tick_index</code> and position, compared side by side</dd></div>
+</dl>
+<div class="tbl-wrap wide"><table class="rules">
+<thead><tr><th>rule</th><th>detail</th></tr></thead>
+<tbody>
+<tr><td>authority</td><td>the hand wallet is the only signer settle accepts</td></tr>
+<tr><td>action</td><td>marks one order settled, with a payment_post_id, releases its cents</td></tr>
+<tr><td>cannot</td><td>create orders, choose recipients, choose amounts, or settle twice</td></tr>
+<tr><td>verification</td><td>every settle call shown against the order it claims to match</td></tr>
+<tr><td>backlog</td><td>open orders waiting on the hand are visible, not hidden</td></tr>
+</tbody></table></div></div>
+</main>
+<footer class="foot">
+  <span>e/halve</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/program">program</a></nav>
+</footer>
+<script src="/assets/data/state.js"></script>
+<script src="/assets/data/orders.js" defer></script>
+<script src="/assets/site.js" defer></script>
+<script src="/assets/js/hand.js" defer></script>
+</body>
+</html>

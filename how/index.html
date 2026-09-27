@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>how — e/halve</title>
+<meta name="description" content="e/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks.">
+<meta name="theme-color" content="#f3eee3">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-page="how">
+<a class="skip" href="#main">skip to content</a>
+<header class="bar">
+  <nav class="bar__inner" aria-label="sections">
+    <a class="brand" href="/">e<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how" aria-current="page">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li><li><a href="https://github.com/" rel="external noopener" target="_blank" data-github>github</a></li></ul>
+    <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
+  </nav>
+</header>
+<main id="main" class="page">
+<header class="head col">
+  <p class="path">~/e-halve/<b>how</b></p>
+  <h1>HOW E/HALVE WORKS</h1>
+  <p class="lede">e/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks. Creator fees fund the whole thing. Every trade on pump.fun pays the standard fee, and the creator's share is claimed into a program vault called the clock. The program that owns the clock has no instruction that lets anyone take from it. SOL only leaves through a tick, and a tick can only fire once the clock has taken in enough to be worth moving.</p>
+  <p>A tick is the whole mechanism in one instruction. It buys the coin from the pool with a slice of the clock and burns what it bought. It reads the SOL price from Pyth, takes a second slice, swaps it to USDC into an outbound vault, and writes one order per handle in the current window of the roster. How the slice splits between burn and orders is set by the era. Nothing here is decided by anyone. There is no vote, no operator switch, no discretionary schedule. The one human in the loop is the hand, and the hand can only do one thing: pay an order that already exists and prove it.</p>
+</header>
+
+<div class="col"><figure class="fig wide" id="fig-flow" aria-label="flow of one tick">
+  <div class="flow">
+    <div>
+      <pre class="ascii" data-flow>    creator fees
+         |
+         v
+     the clock -----------------------------
+         |                                  |
+         v                                  v
+      burn arm                        payout arm
+         |                                  |
+         v                                  v
+      buy + burn                      write orders
+                                            |
+                                            v
+                                       hand pays
+                                            |
+                                            v
+                                        settle</pre>
+      <div class="step" data-step aria-live="polite"></div>
+    </div>
+    <div class="tbl-wrap"><table class="rules">
+<thead><tr><th>rule</th><th>detail</th></tr></thead>
+<tbody>
+<tr data-step="1"><td>pool trade</td><td>any swap on the pool</td></tr>
+<tr data-step="2"><td>tick trigger</td><td>clock balance since last tick &gt;= 0.15 SOL</td></tr>
+<tr data-step="3"><td>tick</td><td>anyone can crank it</td></tr>
+<tr data-step="4" class="burn"><td>burn from pool</td><td>at most 30 bps of spot</td></tr>
+<tr data-step="4" class="burn"><td>burn</td><td>same instruction</td></tr>
+<tr data-step="4" class="pay"><td>write orders</td><td>one order per window position</td></tr>
+<tr data-step="5" class="pay"><td>hand pays</td><td>dollars to the handle on X Money</td></tr>
+<tr data-step="6" class="pay"><td>settle</td><td>USDC released to the hand against the post id</td></tr>
+</tbody></table></div>
+  </div>
+  <figcaption class="fig__cap"><span><b>fig. 1</b> &nbsp;one tick, fees to settle</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
+</figure></div>
+
+<section class="sec col" id="the-trigger" aria-labelledby="the-trigger-h">
+  <span class="sec__label"><a href="#the-trigger">§1</a></span>
+  <h2 id="the-trigger-h">THE TRIGGER</h2>
+<p>Most fee loops fire on a timer for the trade itself. e/halve doesn't. The clock reads its own unticked balance, not a schedule, to decide whether a tick can fire at all. On every call to tick it checks fees claimed since the last tick. If that's at least 0.15 SOL, the tick proceeds. If not, the instruction fails and nothing changes, not even the stored balance. A busy hour can fire several ticks in a row. A quiet week fires none. The clock is quiet when the coin is quiet.</p>
+<div class="tbl-wrap"><table class="rules">
+<thead><tr><th>rule</th><th>detail</th></tr></thead>
+<tbody>
+<tr><td>trigger</td><td>unticked_balance &gt;= 0.15 SOL</td></tr>
+<tr><td>who calls it</td><td>anyone. tick is permissionless, the keeper is a convenience, not a permission</td></tr>
+<tr><td>failed call</td><td>changes nothing, including the stored balance</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="sec col" id="the-era" aria-labelledby="the-era-h">
+  <span class="sec__label"><a href="#the-era">§2</a></span>
+  <h2 id="the-era-h">THE ERA</h2>
+<p>The tick decides how much to burn versus how much to pay out, and that ratio is fixed by the era, not by anyone's judgment. Genesis is era 0: the clock burns everything, pays nothing out. Every four weeks, anyone can call advance. Advancing halves the burn share and gives the rest to payouts, the same curve bitcoin's block reward follows, run on a four-week clock instead of a four-year one. Below 100 bps, burn stops halving and holds there — the clock keeps burning something, forever, instead of decaying to zero.</p>
+<figure class="fig wide stair" id="fig-era" aria-label="burn share by era">
+  <div data-stair></div>
+  <div class="tbl-wrap"><table class="era-tbl">
+<thead><tr><th>era</th><th>burn share</th><th>payout share</th><th>split</th></tr></thead>
+<tbody>
+<tr data-era="0"><td>0 (genesis)</td><td>100%</td><td>0%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:100%"></i><i class="p"></i></div></td></tr>
+<tr data-era="1"><td>1</td><td>50%</td><td>50%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:50%"></i><i class="p"></i></div></td></tr>
+<tr data-era="2"><td>2</td><td>25%</td><td>75%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:25%"></i><i class="p"></i></div></td></tr>
+<tr data-era="3"><td>3</td><td>12.5%</td><td>87.5%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:12.5%"></i><i class="p"></i></div></td></tr>
+<tr data-era="4"><td>4</td><td>6.25%</td><td>93.75%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:6.25%"></i><i class="p"></i></div></td></tr>
+<tr data-era="floor"><td>floor</td><td>1%</td><td>99%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:1%"></i><i class="p"></i></div></td></tr>
+</tbody></table></div>
+  <figcaption class="fig__cap"><span><b>fig. 2</b> &nbsp;burn_bps, log scale, one step per era</span><span data-stair-read></span></figcaption>
+</figure>
+<div class="tbl-wrap"><table class="rules">
+<thead><tr><th>rule</th><th>detail</th></tr></thead>
+<tbody>
+<tr><td>era length</td><td>4 weeks, fixed</td></tr>
+<tr><td>advance</td><td>anyone can call it once era_start &gt;= 4 weeks old</td></tr>
+<tr><td>effect</td><td>burn_bps halves, floors at 100 bps</td></tr>
+<tr><td>failed call</td><td>fails if 4 weeks haven't passed. changes nothing</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="sec col reveal" id="the-burn-arm" aria-labelledby="the-burn-arm-h">
+  <span class="sec__label"><a href="#the-burn-arm">§3</a></span>
+  <h2 id="the-burn-arm-h">THE BURN ARM</h2>
+<p>The first thing a tick does is make the coin scarcer. It takes the era's burn share of the tick's fee slice and buys the coin from the pool, capped at 30 bps of price impact regardless of what the share would otherwise allow. The tokens received are burned inside the same instruction. They are never held, never sold, never staked. Supply only goes down, and every burn is one transaction on the explorer with the tick's signature.</p>
+</section>
+
+<section class="sec col reveal" id="the-payout-arm" aria-labelledby="the-payout-arm-h">
+  <span class="sec__label"><a href="#the-payout-arm">§4</a></span>
+  <h2 id="the-payout-arm-h">THE PAYOUT ARM</h2>
+<p>After the burn, the tick takes the payout share of the same fee slice, converts it to dollars at the Pyth SOL price read in the same instruction, and swaps it to USDC into the outbound vault. Then it decides how many handles get paid. The window is the roster length divided by 64, rounded up, held between 4 and 64. If splitting the dollars that many ways would give anyone less than 25 cents, the window shrinks until every order is at least 25 cents. If not even one 25-cent order can be written, the payout is skipped, the SOL stays in the clock, and the cursor doesn't move. Nobody gets dust.</p>
+</section>
+
+<section class="sec col" id="the-roster-window-cursor-and-holder-weight" aria-labelledby="the-roster-window-cursor-and-holder-weight-h">
+  <span class="sec__label"><a href="#the-roster-window-cursor-and-holder-weight">§5</a></span>
+  <h2 id="the-roster-window-cursor-and-holder-weight-h">THE ROSTER, WINDOW, CURSOR, AND HOLDER WEIGHT</h2>
+<p>Same mechanism as any follower-paid coin needs: the roster is the follower list of the project's X account, written onchain, one account per follower keyed by the hash of their lowercase handle. The window pays consecutive positions starting at the cursor, and the cursor advances by the window size every tick, wrapping at the end. A follower who binds a wallet — posting the address on X, then sending a memo transaction with that post's id — can be weighted higher. Holding at least 0.15% of supply gets weight 2, at least 0.75% gets weight 3, and the payout splits by weight across the window.</p>
+<figure class="fig wide" id="fig-ring" aria-label="cursor advancing around the roster ring">
+  <div class="ring">
+    <div data-ring></div>
+    <dl class="readout" data-ring-read></dl>
+  </div>
+  <figcaption class="fig__cap"><span><b>fig. 3</b> &nbsp;roster_len 42 · window clamp(ceil(42 / 64), 4, 64) = 4</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
+</figure>
+</section>
+
+<section class="sec col reveal" id="orders" aria-labelledby="orders-h">
+  <span class="sec__label"><a href="#orders">§6</a></span>
+  <h2 id="orders-h">ORDERS</h2>
+<p>Every payment starts as an order the program writes during a tick — a handle, an amount in cents, the tick it came from. It opens. It settles once the hand pays it and proves it. It voids only if the handle unfollows before it's paid, in which case the cents return to the clock for the next tick. There is no expiry. An open order stays open until it's paid or the handle leaves.</p>
+</section>
+</main>
+<footer class="foot">
+  <span>e/halve</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/program">program</a></nav>
+</footer>
+<script src="/assets/data/state.js"></script>
+<script src="/assets/site.js" defer></script>
+<script src="/assets/js/how.js" defer></script>
+</body>
+</html>
