@@ -18,7 +18,7 @@
 <header class="bar">
   <nav class="bar__inner" aria-label="sections">
     <a class="brand" href="/">e<span>/</span>halve</a>
-    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how" aria-current="page">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li><li><a href="https://github.com/" rel="external noopener" target="_blank" data-github>github</a></li></ul>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how" aria-current="page">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
     <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
   </nav>
 </header>
@@ -26,6 +26,10 @@
 <header class="head col">
   <p class="path">~/e-halve/<b>how</b></p>
   <h1>HOW E/HALVE WORKS</h1>
+  <figure class="hero" id="fig-hero" aria-label="the e/halve machine">
+    <div class="hero__plate" data-hero></div>
+    <figcaption class="fig__cap"><span><b>fig. 0</b> &nbsp;the machine, one tick per era · era 0 → 2</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
+  </figure>
   <p class="lede">e/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks. Creator fees fund the whole thing. Every trade on pump.fun pays the standard fee, and the creator's share is claimed into a program vault called the clock. The program that owns the clock has no instruction that lets anyone take from it. SOL only leaves through a tick, and a tick can only fire once the clock has taken in enough to be worth moving.</p>
   <p>A tick is the whole mechanism in one instruction. It buys the coin from the pool with a slice of the clock and burns what it bought. It reads the SOL price from Pyth, takes a second slice, swaps it to USDC into an outbound vault, and writes one order per handle in the current window of the roster. How the slice splits between burn and orders is set by the era. Nothing here is decided by anyone. There is no vote, no operator switch, no discretionary schedule. The one human in the loop is the hand, and the hand can only do one thing: pay an order that already exists and prove it.</p>
 </header>
@@ -145,6 +149,7 @@
 </footer>
 <script src="/assets/data/state.js"></script>
 <script src="/assets/site.js" defer></script>
+<script src="/assets/js/hero.js" defer></script>
 <script src="/assets/js/how.js" defer></script>
 </body>
 </html>
