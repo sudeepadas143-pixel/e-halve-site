@@ -27,18 +27,24 @@
   <p class="path">~/e-halve/<b>program</b></p>
   <h1>PROGRAM</h1>
   <p class="lede">Everything the site shows comes from these accounts. Open any of them on the explorer.</p>
+  <p class="note">Not deployed yet. The program is built and tested; the addresses below are derived from its program id and are where it will live. There is nothing at them to open until it is deployed.</p>
 </header>
 
 <div class="col"><div class="tbl-wrap wide dense"><table class="rules" data-addresses>
-<thead><tr><th>account</th><th>address</th><th class="num">explorer</th></tr></thead>
+<thead><tr><th>account</th><th>address</th><th>status</th></tr></thead>
 <tbody>
-<tr data-name="program"><td>program</td><td class="addr none">—</td><td class="num dim">—</td></tr>
-<tr data-name="clock vault"><td>clock vault</td><td class="addr none">—</td><td class="num dim">—</td></tr>
-<tr data-name="outbound vault"><td>outbound vault</td><td class="addr none">—</td><td class="num dim">—</td></tr>
-<tr data-name="hand"><td>hand</td><td class="addr none">—</td><td class="num dim">—</td></tr>
-<tr data-name="attestor"><td>attestor</td><td class="addr none">—</td><td class="num dim">—</td></tr>
-<tr data-name="coin"><td>coin</td><td class="addr none">—</td><td class="num dim">—</td></tr>
-<tr data-name="pool"><td>pool</td><td class="addr none">—</td><td class="num dim">—</td></tr>
+<tr><td>program</td><td class="addr"><span data-addr>Q77PgQ7norSoeP8vEur5hJwxwjd9mFrDjAKh6w2qwWg</span> <button class="copy" type="button" data-copy="Q77PgQ7norSoeP8vEur5hJwxwjd9mFrDjAKh6w2qwWg" aria-label="copy program address">copy</button></td><td class="dim">not deployed</td></tr>
+<tr><td>program data</td><td class="addr"><span data-addr>7taUuUNdAmV2SbgG9gK64hwnK4kiZ6Z6c9xB8aunBK2T</span> <button class="copy" type="button" data-copy="7taUuUNdAmV2SbgG9gK64hwnK4kiZ6Z6c9xB8aunBK2T" aria-label="copy program data address">copy</button></td><td class="dim">derived · upgrade authority removed at initialize</td></tr>
+<tr><td>state</td><td class="addr"><span data-addr>8i9L3Q3zfBCsjEr47HTucM6fm5hEkBWcfWHrAYHMpXN4</span> <button class="copy" type="button" data-copy="8i9L3Q3zfBCsjEr47HTucM6fm5hEkBWcfWHrAYHMpXN4" aria-label="copy state address">copy</button></td><td class="dim">pda [&quot;state&quot;]</td></tr>
+<tr><td>clock</td><td class="addr"><span data-addr>BZEYMaZeWSyt1oDnTwSHpJTQUKJS8ggvdygMMAtsRJ94</span> <button class="copy" type="button" data-copy="BZEYMaZeWSyt1oDnTwSHpJTQUKJS8ggvdygMMAtsRJ94" aria-label="copy clock address">copy</button></td><td class="dim">pda [&quot;clock&quot;]</td></tr>
+<tr><td>clock tokens</td><td class="addr"><span data-addr>13W3R1fRQuXA2BcSF3xNYsqLM8npBXe4JDV3L1dTg8ci</span> <button class="copy" type="button" data-copy="13W3R1fRQuXA2BcSF3xNYsqLM8npBXe4JDV3L1dTg8ci" aria-label="copy clock tokens address">copy</button></td><td class="dim">pda [&quot;clock_tokens&quot;]</td></tr>
+<tr><td>outbound</td><td class="addr"><span data-addr>DB5Qd8jvTMVQervVR9EVfAFkCs4Ba2ckTP2kU875dKFa</span> <button class="copy" type="button" data-copy="DB5Qd8jvTMVQervVR9EVfAFkCs4Ba2ckTP2kU875dKFa" aria-label="copy outbound address">copy</button></td><td class="dim">pda [&quot;outbound&quot;]</td></tr>
+<tr><td>price feed</td><td class="addr"><span data-addr>7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE</span> <button class="copy" type="button" data-copy="7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE" aria-label="copy price feed address">copy</button></td><td class="dim">Pyth SOL/USD · exists on devnet and mainnet</td></tr>
+<tr><td>hand</td><td class="addr none">—</td><td class="dim">set at initialize</td></tr>
+<tr><td>attestor</td><td class="addr none">—</td><td class="dim">set at initialize</td></tr>
+<tr><td>coin</td><td class="addr none">—</td><td class="dim">set at initialize</td></tr>
+<tr><td>pool</td><td class="addr none">—</td><td class="dim">set at initialize</td></tr>
+<tr><td>venue (devnet only)</td><td class="addr"><span data-addr>8aqT4YHdZWEYsuGgtxF8223MeR1cSCvrc2r7n9Wc4eY9</span> <button class="copy" type="button" data-copy="8aqT4YHdZWEYsuGgtxF8223MeR1cSCvrc2r7n9Wc4eY9" aria-label="copy venue (devnet only) address">copy</button></td><td class="dim">stand-in for pump.fun · not deployed</td></tr>
 </tbody></table></div></div>
 
 <section class="sec col reveal" id="instructions" aria-labelledby="instructions-h">
@@ -47,12 +53,15 @@
 <div class="tbl-wrap wide dense"><table class="rules">
 <thead><tr><th>rule</th><th>detail</th></tr></thead>
 <tbody>
-<tr><td>tick</td><td>permissionless. checks the trigger, buys and burns, applies the era's split, swaps the payout share to usdc, writes orders, moves the cursor, writes the tick account.</td></tr>
-<tr><td>advance</td><td>permissionless. once era_start &gt;= 4 weeks old, halves burn_bps and floors it at 100 bps.</td></tr>
-<tr><td>settle</td><td>hand only. marks an order settled with a payment post id and releases its cents.</td></tr>
-<tr><td>upsert_roster</td><td>attestor only. appends or removes roster entries and updates the stored roster root.</td></tr>
-<tr><td>bind</td><td>attestor only. writes bound_wallet after verifying the post and the memo transaction.</td></tr>
-<tr><td>claim_fees</td><td>permissionless. pulls the creator share from the pump.fun creator vault into the clock.</td></tr>
+<tr><td>initialize</td><td>upgrade authority only, once. sets hand, attestor, coin, venue and price feed. must be followed in the same transaction by the loader removing the upgrade authority, so the program is frozen from the moment it is configured.</td></tr>
+<tr><td>claim_fees</td><td>permissionless. pulls the creator share from the creator vault into the clock and adds exactly what arrived to unticked_balance. nothing to claim fails.</td></tr>
+<tr><td>tick</td><td>permissionless. checks the trigger, buys and burns in the same instruction (at most 30 bps of price impact), reads Pyth SOL/USD, swaps the payout share to usdc, writes one order per window position (shrinking until each is at least $0.25), moves the cursor, writes the tick account with the roster root.</td></tr>
+<tr><td>advance</td><td>permissionless. once era_start + 4 weeks has passed, halves burn_bps, floors it at 100 bps, and restarts the era clock.</td></tr>
+<tr><td>settle</td><td>hand only. marks an open order settled with a payment post id and releases its exact cents to the hand&#x27;s usdc account.</td></tr>
+<tr><td>void_order</td><td>permissionless. voids an open order whose handle is no longer on the roster; its cents go to the next payout.</td></tr>
+<tr><td>upsert_roster</td><td>attestor only. appends a follower at the back of the roster and records the new roster root.</td></tr>
+<tr><td>remove_roster</td><td>attestor only. removes an unfollow, moves the last entry into the gap so positions stay dense, records the new root.</td></tr>
+<tr><td>bind</td><td>attestor only. writes bound_wallet after the attestor verifies the post and the memo transaction.</td></tr>
 </tbody></table></div>
 </section>
 
@@ -62,12 +71,13 @@
 <div class="tbl-wrap wide dense"><table class="rules">
 <thead><tr><th>rule</th><th>detail</th></tr></thead>
 <tbody>
-<tr><td>clock</td><td>pda ["clock"]. holds sol. no withdraw path.</td></tr>
-<tr><td>outbound</td><td>pda ["outbound"]. holds usdc. released only by settle.</td></tr>
-<tr><td>state</td><td>pda ["state"]. cursor, unticked_balance, tick_count, roster_len, roster_root, era_start, burn_bps.</td></tr>
-<tr><td>roster entry</td><td>pda ["roster", handle_hash]. position, bound_wallet.</td></tr>
-<tr><td>tick</td><td>pda ["tick", index]. every field listed on the ticks page.</td></tr>
-<tr><td>order</td><td>pda ["order", tick_index, position]. mapped on the orders page.</td></tr>
+<tr><td>state</td><td>pda [&quot;state&quot;]. 368 bytes. cursor, unticked_balance, tick_count, roster_len, roster_root, era_start, era, burn_bps, payout carry, totals.</td></tr>
+<tr><td>clock</td><td>pda [&quot;clock&quot;]. holds sol. leaves only as the burn buy and the payout swap. no withdraw path.</td></tr>
+<tr><td>clock tokens</td><td>pda [&quot;clock_tokens&quot;]. coin account owned by the clock. zero between instructions: everything bought is burned in the same instruction.</td></tr>
+<tr><td>outbound</td><td>pda [&quot;outbound&quot;]. holds usdc. released only by settle, only to the hand, only for an order that exists.</td></tr>
+<tr><td>roster entry</td><td>pda [&quot;roster&quot;, handle_hash]. position, bound_wallet, bind_post_id.</td></tr>
+<tr><td>tick</td><td>pda [&quot;tick&quot;, index]. every field listed on the ticks page. written once.</td></tr>
+<tr><td>order</td><td>pda [&quot;order&quot;, tick_index, position]. handle_hash, weight, amount in cents, status, payment_post_id.</td></tr>
 </tbody></table></div>
 </section>
 
@@ -77,32 +87,71 @@
 <div class="tbl-wrap wide dense"><table class="rules">
 <thead><tr><th>rule</th><th>detail</th></tr></thead>
 <tbody>
-<tr><td>trigger floor</td><td>0.15 SOL</td></tr>
-<tr><td>burn from pool</td><td>at most 30 bps of spot (impact cap), regardless of era's burn share</td></tr>
-<tr><td>era length</td><td>4 weeks, fixed</td></tr>
-<tr><td>burn share</td><td>100 / 50 / 25 / 12.5 / 6.25 bps... halving each era, floor 1%</td></tr>
-<tr><td>window</td><td>clamp(ceil(roster_len / 64), 4, 64)</td></tr>
+<tr><td>trigger floor</td><td>0.15 SOL (150,000,000 lamports)</td></tr>
+<tr><td>burn from pool</td><td>at most 30 bps of spot: buy ≤ reserve · 30 / 20,030</td></tr>
+<tr><td>era length</td><td>4 weeks (2,419,200 s), fixed</td></tr>
+<tr><td>burn share</td><td>10,000 bps at genesis, halving each era, floor 100 bps</td></tr>
+<tr><td>window</td><td>clamp(ceil(roster_len / 64), 4, 64), never more than roster_len</td></tr>
 <tr><td>minimum order</td><td>$0.25</td></tr>
 <tr><td>weights</td><td>1 / 2 / 3 at 0 / 0.15% / 0.75% of supply</td></tr>
 <tr><td>swap slippage</td><td>50 bps</td></tr>
-<tr><td>upgrade authority</td><td>none</td></tr>
+<tr><td>price feed</td><td>Pyth SOL/USD, fully verified, at most 60 s old, confidence within 2%</td></tr>
+<tr><td>upgrade authority</td><td>none: removed in the same transaction as initialize</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="sec col reveal" id="errors" aria-labelledby="errors-h">
+  <span class="sec__label"><a href="#errors">§4</a></span>
+  <h2 id="errors-h">ERRORS</h2>
+<div class="tbl-wrap wide dense"><table class="rules">
+<thead><tr><th>code</th><th>error</th><th>when</th></tr></thead>
+<tbody>
+<tr><td>6000</td><td>BelowTriggerFloor</td><td>unticked balance is below the 0.15 SOL trigger floor</td></tr>
+<tr><td>6001</td><td>WrongVenue</td><td>pool, desk, or venue program does not match the venue recorded in state</td></tr>
+<tr><td>6002</td><td>TooFewTokensReceived</td><td>the burn buy returned fewer tokens than the minimum</td></tr>
+<tr><td>6003</td><td>TooLittleUsdcReceived</td><td>the payout swap returned less USDC than the oracle-derived minimum</td></tr>
+<tr><td>6004</td><td>EraNotElapsed</td><td>the current era has not run its full four weeks</td></tr>
+<tr><td>6005</td><td>OrderAlreadySettled</td><td>order is already settled; a settled order never changes</td></tr>
+<tr><td>6006</td><td>OrderVoided</td><td>order was voided and cannot be settled</td></tr>
+<tr><td>6007</td><td>Unauthorized</td><td>signer is not authorized for this instruction</td></tr>
+<tr><td>6008</td><td>RosterEntryNotFound</td><td>roster entry not found for this handle</td></tr>
+<tr><td>6009</td><td>DivisionByZero</td><td>division by zero in window or weight math</td></tr>
+<tr><td>6010</td><td>EmptyRoster</td><td>the roster is empty</td></tr>
+<tr><td>6011</td><td>MathOverflow</td><td>arithmetic overflow or underflow</td></tr>
+<tr><td>6012</td><td>VaultInsufficient</td><td>the clock holds less SOL than this tick would spend</td></tr>
+<tr><td>6013</td><td>NothingToClaim</td><td>the creator vault has nothing to claim</td></tr>
+<tr><td>6014</td><td>WrongPriceFeed</td><td>price feed is not the configured Pyth SOL/USD account</td></tr>
+<tr><td>6015</td><td>StalePrice</td><td>price is older than the maximum allowed age</td></tr>
+<tr><td>6016</td><td>InvalidPrice</td><td>price is zero, negative, or malformed</td></tr>
+<tr><td>6017</td><td>PriceTooUncertain</td><td>price confidence interval is too wide</td></tr>
+<tr><td>6018</td><td>RosterPositionMismatch</td><td>roster entry is not at the position the window expects</td></tr>
+<tr><td>6019</td><td>WindowAccountsMismatch</td><td>remaining accounts do not match the window: expected 3 per position</td></tr>
+<tr><td>6020</td><td>InvalidOrderAccount</td><td>order account address does not match its tick and position</td></tr>
+<tr><td>6021</td><td>InvalidHolderAccount</td><td>holder token account is not the bound wallet&#x27;s account for this mint</td></tr>
+<tr><td>6022</td><td>HandleStillOnRoster</td><td>handle is still on the roster; its order cannot be voided</td></tr>
+<tr><td>6023</td><td>InvalidPaymentReference</td><td>payment reference must be a non-zero post id</td></tr>
+<tr><td>6024</td><td>RosterLastMismatch</td><td>the account passed as last roster entry is not at the last position</td></tr>
+<tr><td>6025</td><td>TokensNotBurned</td><td>bought tokens were not fully burned</td></tr>
+<tr><td>6026</td><td>InvalidAuthorityConfig</td><td>hand and attestor must be set and distinct from the default key</td></tr>
+<tr><td>6027</td><td>FreezeMissing</td><td>initialize must be followed in the same transaction by the loader freezing this program (upgrade authority → none)</td></tr>
 </tbody></table></div>
 </section>
 
 <section class="sec col" id="live-state" aria-labelledby="live-state-h">
-  <span class="sec__label"><a href="#live-state">§4</a></span>
+  <span class="sec__label"><a href="#live-state">§5</a></span>
   <h2 id="live-state-h">LIVE STATE</h2>
+<p class="note">No state account exists yet, so there is nothing to read. Once the program is deployed and initialized, these are read from the state account above.</p>
 <div class="tbl-wrap wide dense"><table class="rules" data-livestate>
 <thead><tr><th>field</th><th class="num">value</th></tr></thead>
 <tbody>
-<tr><td>mass</td><td class="num" data-val="mass">—</td></tr>
-<tr><td>outbound</td><td class="num" data-val="outbound">—</td></tr>
-<tr><td>burned</td><td class="num" data-val="burned">—</td></tr>
-<tr><td>paid</td><td class="num" data-val="paid">—</td></tr>
-<tr><td>open</td><td class="num" data-val="open">—</td></tr>
-<tr><td>void</td><td class="num" data-val="void">—</td></tr>
-<tr><td>cursor</td><td class="num" data-val="cursor">—</td></tr>
-<tr><td>era</td><td class="num" data-val="era">—</td></tr>
+<tr><td>mass</td><td class="num dim">not deployed</td></tr>
+<tr><td>outbound</td><td class="num dim">not deployed</td></tr>
+<tr><td>burned</td><td class="num dim">not deployed</td></tr>
+<tr><td>paid</td><td class="num dim">not deployed</td></tr>
+<tr><td>open</td><td class="num dim">not deployed</td></tr>
+<tr><td>void</td><td class="num dim">not deployed</td></tr>
+<tr><td>cursor</td><td class="num dim">not deployed</td></tr>
+<tr><td>era</td><td class="num dim">not deployed</td></tr>
 </tbody></table></div>
 </section>
 </main>
@@ -110,7 +159,6 @@
   <span>e/halve</span>
   <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/program">program</a></nav>
 </footer>
-<script src="/assets/data/state.js"></script>
 <script src="/assets/site.js" defer></script>
 <script src="/assets/js/program.js" defer></script>
 </body>

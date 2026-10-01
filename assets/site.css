@@ -647,3 +647,22 @@ pre.ascii {
   .hero__plate { padding: 0.4rem 0.4rem 0.1rem; box-shadow: 4px 4px 0 var(--paper-3); }
   .head .hero { margin-top: 1.4rem; }
 }
+
+/* program page */
+.note { font-size: 1rem; color: var(--muted); font-style: italic; max-width: var(--measure); }
+.head .note { margin-top: 0.4rem; }
+.sec .note { margin: 0 0 1rem; }
+.addr { white-space: nowrap; }
+.addr [data-addr] { font-variant-numeric: tabular-nums; }
+.copy {
+  font: inherit;
+  font-size: 0.68rem;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--rule-2);
+  border-radius: 2px;
+  padding: 0 0.35rem;
+  margin-left: 0.4rem;
+  cursor: pointer;
+}
+.copy:hover { color: var(--ink); border-color: var(--ink); }
