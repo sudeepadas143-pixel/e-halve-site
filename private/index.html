@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>private · e/halve</title>
+<meta name="description" content="An opt-in rail that pays a follower in shielded ZEC. Amounts stay public. The address does not.">
+<meta name="theme-color" content="#f3eee3">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-page="private">
+<a class="skip" href="#main">skip to content</a>
+<header class="bar">
+  <nav class="bar__inner" aria-label="sections">
+    <a class="brand" href="/">e<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/private" aria-current="page">private</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
+    <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
+  </nav>
+</header>
+<main id="main" class="page">
+<header class="head col">
+  <p class="path">~/e-halve/<b>private</b></p>
+  <h1>PRIVATE PATH</h1>
+  <p class="lede">A follower can choose to be paid in shielded ZEC instead of through X Money. The amount stays public. The address it goes to does not.</p>
+  <p class="note">Not live. The program is not deployed. The payout worker has not been tested against NEAR Intents.</p>
+</header>
+
+<section class="sec col reveal" id="what" aria-labelledby="what-h">
+  <span class="sec__label"><a href="#what">§1</a></span>
+  <h2 id="what-h">WHAT IT IS</h2>
+<p>The private path is opt-in. It is one flag on a follower's roster entry. The attestor sets it with bind, after the follower proves the handle with a post on X. A new bind is the only way to change it.</p>
+<p>The flag changes who the hand sends money to. It does not change how much. A tick never reads it. A private follower and a public follower in the same window get the same amount, to the cent.</p>
+<p>No address is ever written on chain. The program does not know where a private payout goes.</p>
+</section>
+
+<section class="sec col reveal" id="public" aria-labelledby="public-h">
+  <span class="sec__label"><a href="#public">§2</a></span>
+  <h2 id="public-h">WHAT STAYS PUBLIC</h2>
+<p>Totals, burns and amounts stay public. Every tick, every burn, every order and its amount in cents are on chain, the same as for everyone else. The private flag is public too. Anyone can see which handles chose this path.</p>
+<p>The hand's USDC deposit for each private order is a public Solana transfer of the same amount. Anyone can match it to the order. What stays hidden is the Zcash address the ZEC lands in.</p>
+</section>
+
+<section class="sec col reveal" id="who" aria-labelledby="who-h">
+  <span class="sec__label"><a href="#who">§3</a></span>
+  <h2 id="who-h">WHO SEES WHAT</h2>
+<div class="tbl-wrap wide dense"><table class="rules">
+<thead><tr><th>party</th><th>sees</th></tr></thead>
+<tbody>
+<tr><td>the public</td><td>order amounts, the flag, the hand's deposit into the swap. not the zcash address.</td></tr>
+<tr><td>the operator</td><td>the handle-to-address mapping. the operator runs the worker and can read every address on file.</td></tr>
+<tr><td>near intents</td><td>the destination address and the amount of each swap. whether its explorers publish that has not been checked.</td></tr>
+<tr><td>the program</td><td>the flag only. never an address.</td></tr>
+</tbody></table></div>
+<p>This is privacy from the public, not from the operator.</p>
+</section>
+
+<section class="sec col reveal" id="flow" aria-labelledby="flow-h">
+  <span class="sec__label"><a href="#flow">§4</a></span>
+  <h2 id="flow-h">HOW A PAYOUT MOVES</h2>
+<div class="tbl-wrap wide dense"><table class="rules">
+<thead><tr><th>step</th><th>what happens</th></tr></thead>
+<tbody>
+<tr><td>1. opt in</td><td>the follower proves the handle. the attestor binds the flag. the operator issues a submission token.</td></tr>
+<tr><td>2. submit</td><td>the follower sends a Sapling address (zs1) with the token. it is encrypted at rest. it is never logged.</td></tr>
+<tr><td>3. tick</td><td>the tick writes the order like any other. same window, same weight, same 25 cent floor.</td></tr>
+<tr><td>4. swap</td><td>the worker quotes USDC to ZEC through NEAR Intents, sends the order's exact USDC, and waits for the result.</td></tr>
+<tr><td>5. delete</td><td>when the swap succeeds the address is deleted. the next private order needs a new submission.</td></tr>
+<tr><td>6. settle</td><td>the hand settles the order on chain. the reference it records says nothing about the recipient.</td></tr>
+</tbody></table></div>
+<p>Each order is paid at most once. The worker writes every step down before it takes it. A failed or refunded swap is retried. An unclear one stops and waits for a person.</p>
+</section>
+
+<section class="sec col reveal" id="risk" aria-labelledby="risk-h">
+  <span class="sec__label"><a href="#risk">§5</a></span>
+  <h2 id="risk-h">WHAT IS NOT DONE</h2>
+<div class="tbl-wrap wide dense"><table class="rules">
+<thead><tr><th>item</th><th>status</th></tr></thead>
+<tbody>
+<tr><td>near intents</td><td>no live test yet. the worker follows the published API. no quote, deposit or swap has been run against the real service. delivery to a shielded address has not been confirmed.</td></tr>
+<tr><td>program</td><td>not deployed. the flag and its tests run on a local validator and in process only.</td></tr>
+<tr><td>zec</td><td>ZEC payouts carry delisting risk. exchanges have delisted privacy coins before. a follower paid in ZEC may find fewer places to sell it.</td></tr>
+<tr><td>addresses</td><td>only Sapling (zs1) addresses are accepted. unified and transparent addresses are refused.</td></tr>
+<tr><td>proofs</td><td>no zero-knowledge circuits. the privacy comes from the shielded pool, not from this program.</td></tr>
+</tbody></table></div>
+</section>
+
+</main>
+</main>
+<footer class="foot">
+  <span>e/halve</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/private">private</a><a href="/program">program</a></nav>
+</footer>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>
