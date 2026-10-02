@@ -666,3 +666,11 @@ pre.ascii {
   cursor: pointer;
 }
 .copy:hover { color: var(--ink); border-color: var(--ink); }
+
+/* hero: claims plate additions */
+.hero .hr-vessel.pay { stroke: var(--pay); }
+.hero .hr-outfill { fill: var(--pay); opacity: 0.55; }
+.hero .hr-dot.reg { fill: var(--pay-soft); stroke: var(--pay); }
+.hero .hr-dot.hot { fill: var(--pay); stroke: var(--pay); }
+.hero .hr-addr { fill: var(--paper); stroke: var(--rule-2); stroke-width: 1.1; transition: fill 0.3s, stroke 0.3s; }
+.hero .hr-addr.got { fill: var(--pay); stroke: var(--pay); }

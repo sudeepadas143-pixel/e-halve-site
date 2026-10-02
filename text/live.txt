@@ -4,7 +4,7 @@ Nothing is deployed, so nothing on this page has a live value yet. Once both pro
 
 Mass is what the clock holds, unticked. It grows only through claim_fees and shrinks only through a tick. Outbound is the USDC the payout arm has collected this era. It grows with each tick and goes to zero at advance, when it moves to the claims inbox.
 
-Burned in total counts the coin burned by ticks and by sweeps. Funded in total counts the USDC advance has moved to claims. Claimed counts what followers have taken from the current round. The gap between a round's pool and its claimed total is what the sweep will burn.
+Burned in total counts the coin burned by ticks and by sweeps. Funded in total counts the USDC advance has moved to claims. Claimed counts what holders have taken from the current round. The gap between a round's pool and its claimed total is what the sweep will burn.
 
 Era decides the split. The burn share halves at each advance and floors at 100 bps. Next era is the time until advance becomes callable, not a promise that someone will call it.
 

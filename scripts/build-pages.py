@@ -9,6 +9,13 @@ import html, re, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PAGES = ["live", "how", "roster", "ticks", "private", "circuits", "relayer", "novelty", "limits", "status", "program"]
 HEADERS = {"rule", "era", "#", "suite"}
+HERO = (
+    '  <figure class="hero" id="fig-hero" aria-label="the z/halve machine">\n'
+    '    <div class="hero__plate" data-hero></div>\n'
+    '    <figcaption class="fig__cap"><span><b>fig. 0</b> &nbsp;the machine, one tick per era · era 0 → 2 · an illustration, not live data</span>'
+    '<button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>\n'
+    '  </figure>\n'
+)
 esc = html.escape
 
 
@@ -19,7 +26,7 @@ def nav(current):
     return items
 
 
-def shell(page, title, description, body):
+def shell(page, title, description, body, scripts=""):
     footer_links = "".join(f'<a href="/{p}">{p}</a>' for p in PAGES)
     return f"""<!doctype html>
 <html lang="en">
@@ -52,7 +59,7 @@ def shell(page, title, description, body):
   <nav aria-label="footer">{footer_links}</nav>
 </footer>
 <script src="/assets/site.js" defer></script>
-</body>
+{scripts}</body>
 </html>
 """
 
@@ -143,6 +150,7 @@ def build(page):
             description = re.split(r"(?<=\.)\s", lede)[0] if lede else sec["title"].lower()
             rest = html_blocks[1:] if lede else html_blocks
             out.append(f'<header class="head col">\n  <p class="path">~/z-halve/<b>{page}</b></p>\n  <h1>{esc(sec["title"])}</h1>\n'
+                       + (HERO if page == "how" else "")
                        + (f'  <p class="lede">{esc(lede)}</p>\n' if lede else "")
                        + f'  <p class="note">Plain text of this page: <a href="/text/{page}.txt">/text/{page}.txt</a></p>\n</header>')
             if rest:
@@ -152,7 +160,8 @@ def build(page):
             out.append(f'<section class="sec col" id="{sid}" aria-labelledby="{sid}-h">\n  <span class="sec__label"><a href="#{sid}">§{n}</a></span>\n  <h2 id="{sid}-h">{esc(sec["title"])}</h2>\n'
                        + "\n".join(html_blocks) + "\n</section>")
     (ROOT / page).mkdir(exist_ok=True)
-    (ROOT / page / "index.html").write_text(shell(page, sections[0]["title"], description, "\n\n".join(out)))
+    scripts = '<script src="/assets/js/hero.js" defer></script>\n' if page == "how" else ""
+    (ROOT / page / "index.html").write_text(shell(page, sections[0]["title"], description, "\n\n".join(out), scripts))
 
 
 if __name__ == "__main__":

@@ -1,16 +1,16 @@
 ROSTER
 ------
-The roster is the follower list of the project's X account, written onchain. Each follower is one account, keyed by the hash of their lowercase handle, holding a position number. The X handle is identity only. No payment goes through X.
+The roster is the list of accounts that follow the project on X, written onchain. Each holder on it is one account, keyed by the hash of their lowercase handle, holding a position number. The X handle is identity only. No payment goes through X.
 
-The attestor reads the live follower list and reconciles it against what is onchain. New followers are appended at the back. Anyone who unfollowed is removed, and the last entry moves into the gap so positions stay dense. Every removal is also written as a numbered removal record, in order. zhalve_claims reads those records to stop removed followers from claiming. Someone who unfollows and follows again comes back as a new entry at the back.
+The attestor reads the live follow list and reconciles it against what is onchain. New entries are appended at the back. Anyone who unfollowed is removed, and the last entry moves into the gap so positions stay dense. Every removal is also written as a numbered removal record, in order. zhalve_claims reads those records to stop removed holders from claiming. Someone who unfollows and follows again comes back as a new entry at the back.
 
 Every tick stores a root over the whole roster at that moment, so anyone can later prove a handle was or was not on the roster when a tick fired.
 
-A follower can bind two things to their entry by posting them from the handle on X. The attestor checks the post and writes them onchain with the post id.
+A holder can bind two things to their entry by posting them from the handle on X. The attestor checks the post and writes them onchain with the post id.
 
-The first is a wallet. It sets the follower's tier: holding at least 0.15% of supply is tier 2, at least 0.75% is tier 3. Everyone else, and anyone without a wallet, is tier 1. The tier is read when the follower is registered into a round, not at every tick. The wallet is public and so is the tier.
+The first is a wallet. It sets the holder's tier: holding at least 0.15% of supply is tier 2, at least 0.75% is tier 3. Everyone else, and anyone without a wallet, is tier 1. The tier is read when the holder is registered into a round, not at every tick. The wallet is public and so is the tier.
 
-The second is a claim commitment: Poseidon(1, secret), where the secret is 31 random bytes only the follower holds. The commitment is public and tied to the handle. It does not reveal which claim belongs to which handle. A follower without a commitment cannot claim.
+The second is a claim commitment: Poseidon(1, secret), where the secret is 31 random bytes only the holder holds. The commitment is public and tied to the handle. It does not reveal which claim belongs to which handle. A holder without a commitment cannot claim.
 
 position            the order this handle entered the roster
 handle_hash         hash of the lowercase handle, how the entry is keyed
@@ -19,9 +19,9 @@ commitment          Poseidon(1, secret), stored beside the entry
 tier                1 unbound or under 0.15% of supply, 2 from 0.15%, 3 from 0.75%
 
 rule              detail
-roster source     the project's X follower list, read by the attestor
+roster source     accounts that follow the project on X, read by the attestor
 entry key         pda ["roster", handle_hash]
-new follower      appended at the back
+new holder      appended at the back
 unfollow          entry removed, last entry moves into the gap, removal record written
 refollow          a new entry at the back. the old commitment stays and counts again. a new bind replaces it
 roster root       stored on every tick

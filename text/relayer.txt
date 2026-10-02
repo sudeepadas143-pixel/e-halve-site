@@ -2,12 +2,12 @@ RELAYER
 -------
 Not built. This page is a design. There is no relayer code, no endpoint and no operator.
 
-A relayer submits a claim for a follower so the follower's own wallet never appears in the transaction. It pays the Solana fees and the rent for the accounts the claim creates, and takes a fee out of the claim. The program binds the relayer's address and the fee into the proof, so a relayer cannot change who is paid or how much it takes.
+A relayer submits a claim for a holder so the holder's own wallet never appears in the transaction. It pays the Solana fees and the rent for the accounts the claim creates, and takes a fee out of the claim. The program binds the relayer's address and the fee into the proof, so a relayer cannot change who is paid or how much it takes.
 
 WHAT IT WOULD DO
 ----------------
-1. Receive a proof and its public inputs from a follower over HTTPS, reachable over Tor.
-2. Check the proof locally against the verifying key and the tree's current root. Reject it if the root has moved, so the follower can rebuild.
+1. Receive a proof and its public inputs from a holder over HTTPS, reachable over Tor.
+2. Check the proof locally against the verifying key and the tree's current root. Reject it if the root has moved, so the holder can rebuild.
 3. Check the fee covers its costs and is at most 5% of the tier amount.
 4. Build one transaction: create the recipient's and its own USDC accounts if they do not exist, then call claim.
 5. Sign as fee payer and submit. Report the signature back.
@@ -21,16 +21,16 @@ can               refuse a claim, delay it, log the request's network origin and
                   recipient, and see when the request arrived
 copying           anyone who copies a submitted claim pays the same recipient and the same
                   relayer. the nullifier stops a second payment
-stale root        if a removal changes the root first, the claim fails. the follower rebuilds
+stale root        if a removal changes the root first, the claim fails. the holder rebuilds
 
 WHAT IT LEAKS
 -------------
-A relayer sees the network origin of each request, the recipient, the tier and the time. If it logs them and later learns a follower's IP, it can link that follower to a claim. Tor or a VPN reduces this. Several independent relayers reduce it further. With one relayer, it sees every claim.
+A relayer sees the network origin of each request, the recipient, the tier and the time. If it logs them and later learns a holder's IP, it can link that holder to a claim. Tor or a VPN reduces this. Several independent relayers reduce it further. With one relayer, it sees every claim.
 
 OPEN QUESTIONS
 --------------
 rule              detail
 who runs it       not decided
 fee schedule      not decided. the 5% cap is a config guess
-abuse             a follower can send invalid proofs. the relayer checks locally before paying
+abuse             a holder can send invalid proofs. the relayer checks locally before paying
 legal             a relayer submits unlinkable withdrawals. get legal advice before running one

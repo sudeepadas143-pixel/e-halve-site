@@ -4,8 +4,8 @@ What z/halve's private claims do not do. Each line is a limit of the design or o
 
 rule              detail
 amounts public    every claim's amount is onchain. the amount reveals the tier
-tier public       a follower's tier comes from their bound wallet, which is public
-anonymity set     the set is the tier's live members for that round. not all followers.
+tier public       a holder's tier comes from their bound wallet, which is public
+anonymity set     the set is the tier's live members for that round. not all holders.
                   a tier with 20 members hides a claim among 20
 relayer leaks     a relayer sees the network origin, the recipient, the tier and the time of
                   each claim. one relayer sees every claim it handles
@@ -21,12 +21,12 @@ upgradable        zhalve_claims keeps its upgrade authority until an audit. that
                   could replace the program and take the inbox and the current pool
 setup             the verifying key is from a local setup, not a real ceremony. whoever ran
                   it could forge proofs
-tier gaming       the tier is read once, at registration. a follower can buy coin, register,
+tier gaming       the tier is read once, at registration. a holder can buy coin, register,
                   and sell
 attestor trust    a dishonest attestor could bind its own commitment to a handle
 removal timing    a removal during the claim window takes effect only when someone runs
                   deregister
-unclaimed         an unclaimed share is burned. it does not roll to the follower
+unclaimed         an unclaimed share is burned. it does not roll to the holder
 legal risk        unlinkable withdrawals carry legal risk. developers of a similar system
                   have faced criminal prosecution. get a lawyer before any mainnet use
 not deployed      nothing has run on devnet or mainnet. the claim flow has run only in

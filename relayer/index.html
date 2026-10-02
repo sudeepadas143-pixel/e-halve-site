@@ -29,25 +29,25 @@
   <p class="note">Plain text of this page: <a href="/text/relayer.txt">/text/relayer.txt</a></p>
 </header>
 
-<div class="col"><p>A relayer submits a claim for a follower so the follower&#x27;s own wallet never appears in the transaction. It pays the Solana fees and the rent for the accounts the claim creates, and takes a fee out of the claim. The program binds the relayer&#x27;s address and the fee into the proof, so a relayer cannot change who is paid or how much it takes.</p></div>
+<div class="col"><p>A relayer submits a claim for a holder so the holder&#x27;s own wallet never appears in the transaction. It pays the Solana fees and the rent for the accounts the claim creates, and takes a fee out of the claim. The program binds the relayer&#x27;s address and the fee into the proof, so a relayer cannot change who is paid or how much it takes.</p></div>
 
 <section class="sec col" id="what-it-would-do" aria-labelledby="what-it-would-do-h">
   <span class="sec__label"><a href="#what-it-would-do">§1</a></span>
   <h2 id="what-it-would-do-h">WHAT IT WOULD DO</h2>
-<ol><li>Receive a proof and its public inputs from a follower over HTTPS, reachable over Tor.</li><li>Check the proof locally against the verifying key and the tree&#x27;s current root. Reject it if the root has moved, so the follower can rebuild.</li><li>Check the fee covers its costs and is at most 5% of the tier amount.</li><li>Build one transaction: create the recipient&#x27;s and its own USDC accounts if they do not exist, then call claim.</li><li>Sign as fee payer and submit. Report the signature back.</li></ol>
-<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>pays</td><td>transaction fees, the nullifier account rent (981,360 lamports), and the rent for any USDC account it creates (2,039,280 lamports each)</td></tr><tr><td>earns</td><td>the fee bound in the proof, at most 5% of the claim (config guess)</td></tr><tr><td>cannot</td><td>change the recipient, the relayer or the fee. claim twice. redirect funds</td></tr><tr><td>can</td><td>refuse a claim, delay it, log the request&#x27;s network origin and the recipient, and see when the request arrived</td></tr><tr><td>copying</td><td>anyone who copies a submitted claim pays the same recipient and the same relayer. the nullifier stops a second payment</td></tr><tr><td>stale root</td><td>if a removal changes the root first, the claim fails. the follower rebuilds</td></tr></tbody></table></div>
+<ol><li>Receive a proof and its public inputs from a holder over HTTPS, reachable over Tor.</li><li>Check the proof locally against the verifying key and the tree&#x27;s current root. Reject it if the root has moved, so the holder can rebuild.</li><li>Check the fee covers its costs and is at most 5% of the tier amount.</li><li>Build one transaction: create the recipient&#x27;s and its own USDC accounts if they do not exist, then call claim.</li><li>Sign as fee payer and submit. Report the signature back.</li></ol>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>pays</td><td>transaction fees, the nullifier account rent (981,360 lamports), and the rent for any USDC account it creates (2,039,280 lamports each)</td></tr><tr><td>earns</td><td>the fee bound in the proof, at most 5% of the claim (config guess)</td></tr><tr><td>cannot</td><td>change the recipient, the relayer or the fee. claim twice. redirect funds</td></tr><tr><td>can</td><td>refuse a claim, delay it, log the request&#x27;s network origin and the recipient, and see when the request arrived</td></tr><tr><td>copying</td><td>anyone who copies a submitted claim pays the same recipient and the same relayer. the nullifier stops a second payment</td></tr><tr><td>stale root</td><td>if a removal changes the root first, the claim fails. the holder rebuilds</td></tr></tbody></table></div>
 </section>
 
 <section class="sec col" id="what-it-leaks" aria-labelledby="what-it-leaks-h">
   <span class="sec__label"><a href="#what-it-leaks">§2</a></span>
   <h2 id="what-it-leaks-h">WHAT IT LEAKS</h2>
-<p>A relayer sees the network origin of each request, the recipient, the tier and the time. If it logs them and later learns a follower&#x27;s IP, it can link that follower to a claim. Tor or a VPN reduces this. Several independent relayers reduce it further. With one relayer, it sees every claim.</p>
+<p>A relayer sees the network origin of each request, the recipient, the tier and the time. If it logs them and later learns a holder&#x27;s IP, it can link that holder to a claim. Tor or a VPN reduces this. Several independent relayers reduce it further. With one relayer, it sees every claim.</p>
 </section>
 
 <section class="sec col" id="open-questions" aria-labelledby="open-questions-h">
   <span class="sec__label"><a href="#open-questions">§3</a></span>
   <h2 id="open-questions-h">OPEN QUESTIONS</h2>
-<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>who runs it</td><td>not decided</td></tr><tr><td>fee schedule</td><td>not decided. the 5% cap is a config guess</td></tr><tr><td>abuse</td><td>a follower can send invalid proofs. the relayer checks locally before paying</td></tr><tr><td>legal</td><td>a relayer submits unlinkable withdrawals. get legal advice before running one</td></tr></tbody></table></div>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>who runs it</td><td>not decided</td></tr><tr><td>fee schedule</td><td>not decided. the 5% cap is a config guess</td></tr><tr><td>abuse</td><td>a holder can send invalid proofs. the relayer checks locally before paying</td></tr><tr><td>legal</td><td>a relayer submits unlinkable withdrawals. get legal advice before running one</td></tr></tbody></table></div>
 </section>
 </main>
 <footer class="foot">

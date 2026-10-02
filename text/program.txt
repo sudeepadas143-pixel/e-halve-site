@@ -22,7 +22,7 @@ tick              permissionless. checks the trigger, buys and burns, applies th
 advance           permissionless. once era_start is 4 weeks old, halves burn_bps, floors
                   it at 100 bps, and moves outbound to the claims inbox. skips the
                   transfer if the inbox is missing or unusable, and still halves.
-upsert_roster     attestor only. appends a follower and records the roster root.
+upsert_roster     attestor only. appends a holder and records the roster root.
 remove_roster     attestor only. removes an unfollow and writes a numbered removal record.
 bind              attestor only. writes the bound wallet and the claim commitment after
                   verifying the X post. needs a non-zero post id.
@@ -32,9 +32,9 @@ ZHALVE_CLAIMS INSTRUCTIONS
 rule              detail
 initialize        anyone, once. every value is read from zhalve's state.
 open_round        anyone, during era r. creates round r and one empty tree per tier.
-register          anyone, during era r. adds a follower's leaf to their tier's tree.
+register          anyone, during era r. adds a holder's leaf to their tier's tree.
 deregister        anyone. processes the next zhalve removal for a round and zeroes the
-                  removed follower's leaf.
+                  removed holder's leaf.
 fund_era          anyone, during era r + 1, after every removal is processed. moves the
                   inbox to the pool and fixes the open tiers and amounts.
 claim             anyone, during era r + 1. verifies a Groth16 proof and pays usdc.

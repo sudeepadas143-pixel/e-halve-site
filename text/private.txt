@@ -1,6 +1,6 @@
 PRIVATE
 -------
-A z/halve payout is a claim. The follower proves they hold a leaf in their tier's tree for the round, without saying which leaf, and the program pays USDC on Solana to an address they choose. The amount and the tier are public. The link between the claim and the handle is what the proof hides, among the members of that tier for that round.
+A z/halve payout is a claim. The holder proves they hold a leaf in their tier's tree for the round, without saying which leaf, and the program pays USDC on Solana to an address they choose. The amount and the tier are public. The link between the claim and the handle is what the proof hides, among the members of that tier for that round.
 
 This page describes what the programs do. The client that makes secrets and proofs is not built. The relayer is not built. Nothing is deployed or audited.
 
@@ -16,7 +16,7 @@ THE CLAIM, STEP BY STEP
 
 5. The era ends. advance moves the era's USDC to zhalve_claims.
 
-6. The round opens. Removed followers' leaves are zeroed first. Then fund_era fixes which tiers open (at least 20 live members each) and what one claim in each tier pays. These amounts do not change for the round.
+6. The round opens. Removed holders' leaves are zeroed first. Then fund_era fixes which tiers open (at least 20 live members each) and what one claim in each tier pays. These amounts do not change for the round.
 
 7. Make the proof. From the public registration records, rebuild your tier's tree and your leaf's path. Compute nullifier = Poseidon(2, secret, round). Pick a fresh recipient address, a relayer and a fee. The proof binds all of them.
 
@@ -35,7 +35,7 @@ amount            fixed per tier per round. public
 fee               public, at most 5% of the claim
 recipient         any Solana address. paid to its USDC associated account
 window            the era after the round's era
-removed follower  leaf zeroed before the round opens, or when deregister runs during it
+removed holder  leaf zeroed before the round opens, or when deregister runs during it
 
 BEFORE YOU CLAIM
 ----------------
@@ -58,7 +58,7 @@ self-submission   submitting your own claim shows your wallet
 
 OPTIONAL EXIT TO SHIELDED ZEC (UNTESTED)
 ----------------------------------------
-A follower can move claimed USDC from Solana to shielded ZEC through NEAR Intents. This is outside the programs and nobody has tested it for z/halve. Sources disagree about which ZEC addresses NEAR Intents can pay: the SwapKit docs say NEAR Intents cannot quote unified addresses, and other sources say it can. Check with a small amount first. NEAR Intents and its solvers see the destination and the amount. ZEC carries delisting risk: exchanges have delisted privacy coins before.
+A holder can move claimed USDC from Solana to shielded ZEC through NEAR Intents. This is outside the programs and nobody has tested it for z/halve. Sources disagree about which ZEC addresses NEAR Intents can pay: the SwapKit docs say NEAR Intents cannot quote unified addresses, and other sources say it can. Check with a small amount first. NEAR Intents and its solvers see the destination and the amount. ZEC carries delisting risk: exchanges have delisted privacy coins before.
 
 rule              detail
 status            untested

@@ -2,13 +2,13 @@ z/halve  live · how · roster · ticks · private · circuits · relayer · nov
 
 HOW Z/HALVE WORKS
 -----------------
-z/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks. Two programs run it. zhalve runs the clock, the burn and the halving. zhalve_claims pays followers. A follower claims a share of each era's payout with a zero knowledge proof that they belong to their tier, without saying which follower they are. The amounts are public. Which follower took which payment is not.
+z/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks. Two programs run it. zhalve runs the clock, the burn and the halving. zhalve_claims pays holders. A holder claims a share of each era's payout with a zero knowledge proof that they belong to their tier, without saying which holder they are. The amounts are public. Which holder took which payment is not.
 
 Creator fees fund the whole thing. Every trade on pump.fun pays the standard fee, and the creator's share is claimed into a program vault called the clock. zhalve has no instruction that lets anyone take from the clock. SOL only leaves through a tick, and a tick can only fire once the clock has taken in enough to be worth moving.
 
 A tick is one instruction. It buys the coin from the pool with a slice of the clock and burns what it bought. It reads the SOL price from Pyth, sells the rest of the slice for USDC, and holds that USDC in the outbound vault. How the slice splits between burn and payout is set by the era. Nobody decides it. There is no vote, no operator switch and no discretionary schedule.
 
-At the end of each era, advance halves the burn share and moves the era's USDC to zhalve_claims. During the next era, followers claim it. Whatever nobody claims is sold, used to buy the coin, and burned.
+At the end of each era, advance halves the burn share and moves the era's USDC to zhalve_claims. During the next era, holders claim it. Whatever nobody claims is sold, used to buy the coin, and burned.
 
 Nothing is deployed. Nothing is audited. See status and limits.
 
@@ -80,11 +80,11 @@ After the burn, the tick takes the payout share of the same slice, reads the Pyt
 
 THE ROSTER AND TIERS
 --------------------
-The roster is the follower list of the project's X account, written onchain, one account per follower keyed by the hash of their lowercase handle. The X handle is identity only. No payment goes through X. A follower can bind a wallet and a claim commitment by posting them from the handle. The wallet sets the tier: at least 0.15% of supply is tier 2, at least 0.75% is tier 3, everyone else is tier 1. The commitment is what lets the follower claim later without revealing which handle they are.
+The roster is the list of accounts that follow the project on X, written onchain, one account per holder keyed by the hash of their lowercase handle. The X handle is identity only. No payment goes through X. A holder can bind a wallet and a claim commitment by posting them from the handle. The wallet sets the tier: at least 0.15% of supply is tier 2, at least 0.75% is tier 3, everyone else is tier 1. The commitment is what lets the holder claim later without revealing which handle they are.
 
 CLAIMS
 ------
-Each era's USDC becomes a round in zhalve_claims. During the era, anyone can register followers into their tier's tree. When the era ends, the round opens for claims. A tier opens only if it has at least 20 live members. One claim pays the same amount to everyone in a tier, and tiers are weighted 1, 2 and 3. A claim needs a Groth16 proof of membership and a nullifier, which stops the same secret claiming twice in a round. The full flow is on the private page.
+Each era's USDC becomes a round in zhalve_claims. During the era, anyone can register holders into their tier's tree. When the era ends, the round opens for claims. A tier opens only if it has at least 20 live members. One claim pays the same amount to everyone in a tier, and tiers are weighted 1, 2 and 3. A claim needs a Groth16 proof of membership and a nullifier, which stops the same secret claiming twice in a round. The full flow is on the private page.
 
 rule              detail
 round r           the USDC collected during era r

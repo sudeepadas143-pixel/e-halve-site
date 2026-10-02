@@ -8,7 +8,7 @@ audit             not done
 ceremony          not done. the verifying key is from a local setup, not a real ceremony
 legal review      not done
 relayer           not built
-client            not built. nothing makes secrets or proofs for followers yet
+client            not built. nothing makes secrets or proofs for holders yet
 website           updated for claims. pages are built from these texts. nothing on it is live
 zhalve            built. frozen at initialize once deployed
 zhalve_claims     built. upgrade authority stays set until an audit
