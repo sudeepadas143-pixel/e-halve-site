@@ -21,7 +21,7 @@ tier                1 unbound or under 0.15% of supply, 2 from 0.15%, 3 from 0.7
 rule              detail
 roster source     accounts that follow the project on X, read by the attestor
 entry key         pda ["roster", handle_hash]
-new holder      appended at the back
+new holder        appended at the back
 unfollow          entry removed, last entry moves into the gap, removal record written
 refollow          a new entry at the back. the old commitment stays and counts again. a new bind replaces it
 roster root       stored on every tick

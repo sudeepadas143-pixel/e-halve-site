@@ -35,7 +35,7 @@ amount            fixed per tier per round. public
 fee               public, at most 5% of the claim
 recipient         any Solana address. paid to its USDC associated account
 window            the era after the round's era
-removed holder  leaf zeroed before the round opens, or when deregister runs during it
+removed holder    leaf zeroed before the round opens, or when deregister runs during it
 
 BEFORE YOU CLAIM
 ----------------
