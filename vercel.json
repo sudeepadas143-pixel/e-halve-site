@@ -1,7 +1,10 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "redirects": [{ "source": "/", "destination": "/how", "permanent": false }],
+  "redirects": [
+    { "source": "/", "destination": "/how", "permanent": false },
+    { "source": "/private", "destination": "/zec", "permanent": true }
+  ],
   "headers": [
     { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }] }
   ]

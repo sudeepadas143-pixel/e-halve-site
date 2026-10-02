@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>program — e/halve</title>
+<title>program — z/halve</title>
 <meta name="description" content="Everything the site shows comes from these accounts. Open any of them on the explorer.">
 <meta name="theme-color" content="#f3eee3">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -17,14 +17,14 @@
 <a class="skip" href="#main">skip to content</a>
 <header class="bar">
   <nav class="bar__inner" aria-label="sections">
-    <a class="brand" href="/">e<span>/</span>halve</a>
-    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/private">private</a></li><li><a href="/program" aria-current="page">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
+    <a class="brand" href="/">z<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/zec">zec</a></li><li><a href="/program" aria-current="page">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
     <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
   </nav>
 </header>
 <main id="main" class="page">
 <header class="head col">
-  <p class="path">~/e-halve/<b>program</b></p>
+  <p class="path">~/z-halve/<b>program</b></p>
   <h1>PROGRAM</h1>
   <p class="lede">Everything the site shows comes from these accounts. Open any of them on the explorer.</p>
   <p class="note">Not deployed yet. The program is built and tested; the addresses below are derived from its program id and are where it will live. There is nothing at them to open until it is deployed.</p>
@@ -57,11 +57,11 @@
 <tr><td>claim_fees</td><td>permissionless. pulls the creator share from the creator vault into the clock and adds exactly what arrived to unticked_balance. nothing to claim fails.</td></tr>
 <tr><td>tick</td><td>permissionless. checks the trigger, buys and burns in the same instruction (at most 30 bps of price impact), reads Pyth SOL/USD, swaps the payout share to usdc, writes one order per window position (shrinking until each is at least $0.25), moves the cursor, writes the tick account with the roster root.</td></tr>
 <tr><td>advance</td><td>permissionless. once era_start + 4 weeks has passed, halves burn_bps, floors it at 100 bps, and restarts the era clock.</td></tr>
-<tr><td>settle</td><td>hand only. marks an open order settled with a payment post id and releases its exact cents to the hand&#x27;s usdc account.</td></tr>
+<tr><td>settle</td><td>hand only. after the hand pays the order in shielded ZEC, marks it settled with a payout reference and releases its exact cents to the hand&#x27;s usdc account. the reference says nothing about the recipient.</td></tr>
 <tr><td>void_order</td><td>permissionless. voids an open order whose handle is no longer on the roster; its cents go to the next payout.</td></tr>
 <tr><td>upsert_roster</td><td>attestor only. appends a follower at the back of the roster and records the new roster root.</td></tr>
 <tr><td>remove_roster</td><td>attestor only. removes an unfollow, moves the last entry into the gap so positions stay dense, records the new root.</td></tr>
-<tr><td>bind</td><td>attestor only. writes bound_wallet after the attestor verifies the post and the memo transaction. also writes the private flag, the opt-in to the <a href="/private">private path</a>. bind is the only instruction that changes it. it takes no address.</td></tr>
+<tr><td>bind</td><td>attestor only. writes bound_wallet after the attestor verifies the post and the memo transaction. the wallet only sets holder weight. payouts go to a <a href="/zec">shielded address</a> that never touches the program.</td></tr>
 </tbody></table></div>
 </section>
 
@@ -75,9 +75,9 @@
 <tr><td>clock</td><td>pda [&quot;clock&quot;]. holds sol. leaves only as the burn buy and the payout swap. no withdraw path.</td></tr>
 <tr><td>clock tokens</td><td>pda [&quot;clock_tokens&quot;]. coin account owned by the clock. zero between instructions: everything bought is burned in the same instruction.</td></tr>
 <tr><td>outbound</td><td>pda [&quot;outbound&quot;]. holds usdc. released only by settle, only to the hand, only for an order that exists.</td></tr>
-<tr><td>roster entry</td><td>pda [&quot;roster&quot;, handle_hash]. 86 bytes. position, bound_wallet, bind_post_id, private. tick never reads private, so it never changes an amount.</td></tr>
+<tr><td>roster entry</td><td>pda [&quot;roster&quot;, handle_hash]. 85 bytes. position, bound_wallet, bind_post_id. no payout address.</td></tr>
 <tr><td>tick</td><td>pda [&quot;tick&quot;, index]. every field listed on the ticks page. written once.</td></tr>
-<tr><td>order</td><td>pda [&quot;order&quot;, tick_index, position]. handle_hash, weight, amount in cents, status, payment_post_id.</td></tr>
+<tr><td>order</td><td>pda [&quot;order&quot;, tick_index, position]. handle_hash, weight, amount in cents, status, payment_ref.</td></tr>
 </tbody></table></div>
 </section>
 
@@ -129,7 +129,7 @@
 <tr><td>6020</td><td>InvalidOrderAccount</td><td>order account address does not match its tick and position</td></tr>
 <tr><td>6021</td><td>InvalidHolderAccount</td><td>holder token account is not the bound wallet&#x27;s account for this mint</td></tr>
 <tr><td>6022</td><td>HandleStillOnRoster</td><td>handle is still on the roster; its order cannot be voided</td></tr>
-<tr><td>6023</td><td>InvalidPaymentReference</td><td>payment reference must be a non-zero post id</td></tr>
+<tr><td>6023</td><td>InvalidPaymentReference</td><td>payment reference must be non-zero: a payout reference for settle, a post id for bind</td></tr>
 <tr><td>6024</td><td>RosterLastMismatch</td><td>the account passed as last roster entry is not at the last position</td></tr>
 <tr><td>6025</td><td>TokensNotBurned</td><td>bought tokens were not fully burned</td></tr>
 <tr><td>6026</td><td>InvalidAuthorityConfig</td><td>hand and attestor must be set and distinct from the default key</td></tr>
@@ -156,8 +156,8 @@
 </section>
 </main>
 <footer class="foot">
-  <span>e/halve</span>
-  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/private">private</a><a href="/program">program</a></nav>
+  <span>z/halve</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/zec">zec</a><a href="/program">program</a></nav>
 </footer>
 <script src="/assets/site.js" defer></script>
 <script src="/assets/js/program.js" defer></script>

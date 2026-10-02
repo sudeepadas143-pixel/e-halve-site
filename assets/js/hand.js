@@ -2,7 +2,7 @@
 (function () {
   "use strict";
   var EH = window.EH, f = EH.fmt;
-  var O = window.EHALVE_ORDERS || [], SET = window.EHALVE_SETTLES || [], S = window.EHALVE_STATE;
+  var O = window.ZHALVE_ORDERS || [], SET = window.ZHALVE_SETTLES || [], S = window.ZHALVE_STATE;
   var byKey = {};
   O.forEach(function (o) { byKey[o.tick_index + ":" + o.position] = o; });
 
@@ -43,7 +43,7 @@
     ];
     var box = fig.querySelector("[data-match]");
     box.innerHTML =
-      "<h3>settle call · post " + s.payment_post_id + "</h3><h3></h3><h3>matched order · pda [\"order\", " + o.tick_index + ", " + o.position + "]</h3>" +
+      "<h3>settle call · ref " + s.payment_ref + "</h3><h3></h3><h3>matched order · pda [\"order\", " + o.tick_index + ", " + o.position + "]</h3>" +
       rows.map(function (r) {
         return '<div class="row"><div class="cell"><span>' + r[0] + "</span><span>" + r[1] + '</span></div><div class="eq off">=</div><div class="cell"><span>' + r[0] + "</span><span>" + r[2] + "</span></div></div>";
       }).join("") +
@@ -70,12 +70,12 @@
     var cnt = document.querySelector("[data-settles-count]");
     var shown = 0, PAGE = 30;
     var mark = function (b) { return b ? '<span class="ok">=</span>' : '<span class="bad">≠</span>'; };
-    th.innerHTML = '<tr><th class="k">slot</th><th>payment_post_id</th><th class="num">tick_index</th><th class="num">position</th><th>handle_hash</th><th class="num">amount</th><th>handle</th><th>amount</th><th>tick</th><th>pos</th><th>match</th></tr>';
+    th.innerHTML = '<tr><th class="k">slot</th><th>payment_ref</th><th class="num">tick_index</th><th class="num">position</th><th>handle_hash</th><th class="num">amount</th><th>handle</th><th>amount</th><th>tick</th><th>pos</th><th>match</th></tr>';
     var page = function () {
       var html = "";
       SET.slice(shown, shown + PAGE).forEach(function (s, k) {
         var c = checks[shown + k];
-        html += '<tr><td class="k">' + f.n(s.slot) + "</td><td>" + s.payment_post_id + '</td><td class="num">' + s.tick_index + '</td><td class="num">' + s.position +
+        html += '<tr><td class="k">' + f.n(s.slot) + "</td><td>" + s.payment_ref + '</td><td class="num">' + s.tick_index + '</td><td class="num">' + s.position +
           "</td><td>" + f.hash(s.handle_hash, 8, 6) + '</td><td class="num">' + f.cents(s.amount) + "</td><td>" + mark(c.handle) + "</td><td>" + mark(c.amount) +
           "</td><td>" + mark(c.tick) + "</td><td>" + mark(c.position) + "</td><td>" + (c.ok ? '<span class="ok">matched</span>' : '<span class="bad">unmatched</span>') + "</td></tr>";
       });

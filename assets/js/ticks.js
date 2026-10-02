@@ -2,7 +2,7 @@
 (function () {
   "use strict";
   var EH = window.EH, f = EH.fmt;
-  var T = window.EHALVE_TICKS;
+  var T = window.ZHALVE_TICKS;
   if (!T) return;
   var ix = {}; T.cols.forEach(function (c, i) { ix[c] = i; });
   var get = function (r, c) { return r[ix[c]]; };

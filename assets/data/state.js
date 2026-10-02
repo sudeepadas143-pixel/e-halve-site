@@ -1,5 +1,5 @@
 // static snapshot of program state. replace with live rpc reads — see README.md next to the site folder.
-window.EHALVE_STATE = {
+window.ZHALVE_STATE = {
  "snapshot": {
   "slot": 441902118,
   "t": 1790500364000

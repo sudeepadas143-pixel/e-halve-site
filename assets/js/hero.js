@@ -304,7 +304,7 @@
 
     // 4 · the hand pays each order and proves it
     if (nPay > 0) {
-      phase("write orders → hand pays → settle");
+      phase("write orders → hand pays in shielded zec → settle");
       await run.wait(250);
       for (var j = 0; j < WIN; j++) {
         await travel(run, lay.p.hand, 380, "pay");

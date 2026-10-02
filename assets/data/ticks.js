@@ -1,5 +1,5 @@
 // static snapshot of program state. replace with live rpc reads — see README.md next to the site folder.
-window.EHALVE_TICKS = {cols:["i","t","slot","era","reserve_before","reserve_after","delta","mass_before","mass_after","buy_sol","burned_tokens","sol_usd","spill_sol","spill_usd","spill_bps","window","cursor_before","cursor_after","roster_len","roster_root"],rows:[
+window.ZHALVE_TICKS = {cols:["i","t","slot","era","reserve_before","reserve_after","delta","mass_before","mass_after","buy_sol","burned_tokens","sol_usd","spill_sol","spill_usd","spill_bps","window","cursor_before","cursor_after","roster_len","roster_root"],rows:[
 [875,1790482244142,441856818,2,690.79046836,691.007968412,0.217500051,0.162036719,0,0.04050918,1513.639479672,161.181373758,0.121527539,19.587975715,7500,37,548,585,2366,"6b972d64700ffad34a9a6de035554b56ce0dee7b43131ed2ffcd042aac0890ce"],
 [874,1790472366862,441832125,2,694.827025287,694.993018478,0.16599319,0.158100891,0,0.039525223,1459.766374927,161.233637901,0.118575668,19.118386363,7500,37,511,548,2364,"ba7224f26aead179365364bfb19cf84823bb1b9f043bcc0ac949e757655f4689"],
 [873,1790453455083,441784846,2,700.772424236,700.56256675,0.209857486,0.157442399,0,0.0393606,1429.1257538,161.673962963,0.118081799,19.090752476,7500,37,474,511,2365,"a778d27a5e8712f3381194ec6af5cab6a607d32b618255165ce066c59a05e8c6"],

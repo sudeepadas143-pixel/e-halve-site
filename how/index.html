@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>how — e/halve</title>
-<meta name="description" content="e/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks.">
+<title>how — z/halve</title>
+<meta name="description" content="z/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks.">
 <meta name="theme-color" content="#f3eee3">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,21 +17,21 @@
 <a class="skip" href="#main">skip to content</a>
 <header class="bar">
   <nav class="bar__inner" aria-label="sections">
-    <a class="brand" href="/">e<span>/</span>halve</a>
-    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how" aria-current="page">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/private">private</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
+    <a class="brand" href="/">z<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how" aria-current="page">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/zec">zec</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
     <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
   </nav>
 </header>
 <main id="main" class="page">
 <header class="head col">
-  <p class="path">~/e-halve/<b>how</b></p>
-  <h1>HOW E/HALVE WORKS</h1>
-  <figure class="hero" id="fig-hero" aria-label="the e/halve machine">
+  <p class="path">~/z-halve/<b>how</b></p>
+  <h1>HOW Z/HALVE WORKS</h1>
+  <figure class="hero" id="fig-hero" aria-label="the z/halve machine">
     <div class="hero__plate" data-hero></div>
     <figcaption class="fig__cap"><span><b>fig. 0</b> &nbsp;the machine, one tick per era · era 0 → 2</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
   </figure>
-  <p class="lede">e/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks. Creator fees fund the whole thing. Every trade on pump.fun pays the standard fee, and the creator's share is claimed into a program vault called the clock. The program that owns the clock has no instruction that lets anyone take from it. SOL only leaves through a tick, and a tick can only fire once the clock has taken in enough to be worth moving.</p>
-  <p>A tick is the whole mechanism in one instruction. It buys the coin from the pool with a slice of the clock and burns what it bought. It reads the SOL price from Pyth, takes a second slice, swaps it to USDC into an outbound vault, and writes one order per handle in the current window of the roster. How the slice splits between burn and orders is set by the era. Nothing here is decided by anyone. There is no vote, no operator switch, no discretionary schedule. The one human in the loop is the hand, and the hand can only do one thing: pay an order that already exists and prove it.</p>
+  <p class="lede">z/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks. Every follower it pays is paid in shielded ZEC. The amounts are public. Where they land is not. Creator fees fund the whole thing. Every trade on pump.fun pays the standard fee, and the creator's share is claimed into a program vault called the clock. The program that owns the clock has no instruction that lets anyone take from it. SOL only leaves through a tick, and a tick can only fire once the clock has taken in enough to be worth moving.</p>
+  <p>A tick is the whole mechanism in one instruction. It buys the coin from the pool with a slice of the clock and burns what it bought. It reads the SOL price from Pyth, takes a second slice, swaps it to USDC into an outbound vault, and writes one order per handle in the current window of the roster. How the slice splits between burn and orders is set by the era. Nothing here is decided by anyone. There is no vote, no operator switch, no discretionary schedule. The one human in the loop is the hand, and the hand can only do one thing: pay an order that already exists, in shielded ZEC, and settle it.</p>
 </header>
 
 <div class="col"><figure class="fig wide" id="fig-flow" aria-label="flow of one tick">
@@ -49,7 +49,7 @@
       buy + burn                      write orders
                                             |
                                             v
-                                       hand pays
+                                     hand pays zec
                                             |
                                             v
                                         settle</pre>
@@ -64,8 +64,8 @@
 <tr data-step="4" class="burn"><td>burn from pool</td><td>at most 30 bps of spot</td></tr>
 <tr data-step="4" class="burn"><td>burn</td><td>same instruction</td></tr>
 <tr data-step="4" class="pay"><td>write orders</td><td>one order per window position</td></tr>
-<tr data-step="5" class="pay"><td>hand pays</td><td>dollars to the handle on X Money</td></tr>
-<tr data-step="6" class="pay"><td>settle</td><td>USDC released to the hand against the post id</td></tr>
+<tr data-step="5" class="pay"><td>hand pays</td><td>the order's USDC swapped to shielded ZEC, sent to the follower's own address</td></tr>
+<tr data-step="6" class="pay"><td>settle</td><td>USDC released to the hand against a payout reference</td></tr>
 </tbody></table></div>
   </div>
   <figcaption class="fig__cap"><span><b>fig. 1</b> &nbsp;one tick, fees to settle</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
@@ -74,7 +74,7 @@
 <section class="sec col" id="the-trigger" aria-labelledby="the-trigger-h">
   <span class="sec__label"><a href="#the-trigger">§1</a></span>
   <h2 id="the-trigger-h">THE TRIGGER</h2>
-<p>Most fee loops fire on a timer for the trade itself. e/halve doesn't. The clock reads its own unticked balance, not a schedule, to decide whether a tick can fire at all. On every call to tick it checks fees claimed since the last tick. If that's at least 0.15 SOL, the tick proceeds. If not, the instruction fails and nothing changes, not even the stored balance. A busy hour can fire several ticks in a row. A quiet week fires none. The clock is quiet when the coin is quiet.</p>
+<p>Most fee loops fire on a timer for the trade itself. z/halve doesn't. The clock reads its own unticked balance, not a schedule, to decide whether a tick can fire at all. On every call to tick it checks fees claimed since the last tick. If that's at least 0.15 SOL, the tick proceeds. If not, the instruction fails and nothing changes, not even the stored balance. A busy hour can fire several ticks in a row. A quiet week fires none. The clock is quiet when the coin is quiet.</p>
 <div class="tbl-wrap"><table class="rules">
 <thead><tr><th>rule</th><th>detail</th></tr></thead>
 <tbody>
@@ -140,12 +140,12 @@
 <section class="sec col reveal" id="orders" aria-labelledby="orders-h">
   <span class="sec__label"><a href="#orders">§6</a></span>
   <h2 id="orders-h">ORDERS</h2>
-<p>Every payment starts as an order the program writes during a tick — a handle, an amount in cents, the tick it came from. It opens. It settles once the hand pays it and proves it. It voids only if the handle unfollows before it's paid, in which case the cents return to the clock for the next tick. There is no expiry. An open order stays open until it's paid or the handle leaves.</p>
+<p>Every payment starts as an order the program writes during a tick — a handle, an amount in cents, the tick it came from. It opens. It settles once the hand pays it in shielded ZEC and records a reference. It voids only if the handle unfollows before it's paid, in which case the cents return to the clock for the next tick. There is no expiry. An open order stays open until it's paid or the handle leaves.</p>
 </section>
 </main>
 <footer class="foot">
-  <span>e/halve</span>
-  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/private">private</a><a href="/program">program</a></nav>
+  <span>z/halve</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/zec">zec</a><a href="/program">program</a></nav>
 </footer>
 <script src="/assets/data/state.js"></script>
 <script src="/assets/site.js" defer></script>

@@ -1,4 +1,4 @@
-/* e/halve — shared behaviour: motion coordinator, scroll reveal, wallet, formatting. */
+/* z/halve — shared behaviour: motion coordinator, scroll reveal, wallet, formatting. */
 (function () {
   "use strict";
 
@@ -152,7 +152,7 @@
   };
 
   /* ── state helpers (read the same fields the program reads) ───────── */
-  var S = window.EHALVE_STATE;
+  var S = window.ZHALVE_STATE;
   var ERA_MS = 4 * 7 * 86400e3;
   var chain = {
     burnBps: function (era) { return Math.max(100, Math.floor(10000 / Math.pow(2, era))); },

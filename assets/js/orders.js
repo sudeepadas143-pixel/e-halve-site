@@ -12,7 +12,7 @@
       "      |",
       "      v",
       "    open ----------------------------> settled",
-      "      |          hand · settle          payment_post_id",
+      "      |          hand · settle          payment_ref",
       "      |",
       "      +----------------------------> void",
       "                 handle unfollows        |",
@@ -29,7 +29,7 @@
       toSettled: A.row(3, L[3].indexOf("-"), L[3].indexOf(">")),
       settled: A.label("settled"),
       hand: A.label("hand · settle"),
-      post: A.label("payment_post_id"),
+      post: A.label("payment_ref"),
       down2: A.col(6, 4, 6),
       toVoid: A.row(6, 7, L[6].indexOf(">")),
       void: A.label("void"),
@@ -78,14 +78,14 @@
   }
 
   /* ── table ── */
-  var O = window.EHALVE_ORDERS || [];
+  var O = window.ZHALVE_ORDERS || [];
   var wrap = document.querySelector("[data-orders]");
   if (!wrap) return;
   var thead = wrap.querySelector("thead"), tbody = wrap.querySelector("tbody");
   var more = document.querySelector("[data-more]");
   var count = document.querySelector("[data-orders-count]");
   var filter = "all", shown = 0, PAGE = 30;
-  thead.innerHTML = '<tr><th class="k">tick_index</th><th class="num">position</th><th>handle_hash</th><th class="num">amount</th><th>status</th><th>payment_post_id</th></tr>';
+  thead.innerHTML = '<tr><th class="k">tick_index</th><th class="num">position</th><th>handle_hash</th><th class="num">amount</th><th>status</th><th>payment_ref</th></tr>';
 
   function list() { return filter === "all" ? O : O.filter(function (o) { return o.status === filter; }); }
   function render(reset) {
@@ -95,11 +95,11 @@
     L.slice(shown, shown + PAGE).forEach(function (o) {
       html += '<tr><td class="k">' + o.tick_index + '</td><td class="num">' + o.position + "</td><td>" + f.hash(o.handle_hash, 8, 6) +
         '</td><td class="num">' + f.cents(o.amount) + '</td><td><span class="st st--' + o.status + '">' + o.status + "</span></td>" +
-        "<td" + (o.payment_post_id ? "" : ' class="dim"') + ">" + (o.payment_post_id || "—") + "</td></tr>";
+        "<td" + (o.payment_ref ? "" : ' class="dim"') + ">" + (o.payment_ref || "—") + "</td></tr>";
     });
     tbody.insertAdjacentHTML("beforeend", html);
     shown = Math.min(L.length, shown + PAGE);
-    var S = window.EHALVE_STATE;
+    var S = window.ZHALVE_STATE;
     count.textContent = "showing " + shown + " of " + L.length + " orders from the last " +
       new Set(O.map(function (o) { return o.tick_index; })).size + " payout ticks" +
       (S ? " · " + f.n(S.totals.orders) + " written since genesis" : "");

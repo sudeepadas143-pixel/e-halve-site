@@ -189,7 +189,7 @@
     svg.push('<path class="ghost" d="' + d + '"/>');
     svg.push('<path class="line" d="' + d + '"/>');
     // "now", from the program's own era_start
-    var S = window.EHALVE_STATE;
+    var S = window.ZHALVE_STATE;
     if (S) {
       var wk = (Date.now() - S.program.era_starts[0]) / (7 * 86400e3);
       var nx = padL + Math.min(1, wk / (ERAS * 4)) * iw;

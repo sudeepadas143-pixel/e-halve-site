@@ -15,7 +15,7 @@
 
   // one read of everything the page shows. swap the body of this for rpc calls.
   function read() {
-    var S = window.EHALVE_STATE;
+    var S = window.ZHALVE_STATE;
     return Promise.resolve({
       mass: S.state.unticked_balance,
       outbound: S.outbound_usdc,
@@ -82,7 +82,7 @@
   }
 
   // things that move with wall time: slot, read age, time until advance
-  var S = window.EHALVE_STATE;
+  var S = window.ZHALVE_STATE;
   function clock() {
     slotEl.textContent = f.n(chain.slot());
     readEl.textContent = f.ago(Date.now() - lastRead);
