@@ -168,7 +168,6 @@
     program: "",
     "clock vault": "",
     "outbound vault": "",
-    hand: "",
     attestor: "",
     coin: "",
     pool: "",

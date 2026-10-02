@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ticks — z/halve</title>
+<title>ticks · z/halve</title>
 <meta name="description" content="Every tick the program has made, newest first.">
 <meta name="theme-color" content="#f3eee3">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -18,62 +18,27 @@
 <header class="bar">
   <nav class="bar__inner" aria-label="sections">
     <a class="brand" href="/">z<span>/</span>halve</a>
-    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks" aria-current="page">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/zec">zec</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
-    <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks" aria-current="page">ticks</a></li><li><a href="/private">private</a></li><li><a href="/circuits">circuits</a></li><li><a href="/relayer">relayer</a></li><li><a href="/novelty">novelty</a></li><li><a href="/limits">limits</a></li><li><a href="/status">status</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
   </nav>
 </header>
 <main id="main" class="page">
 <header class="head col">
   <p class="path">~/z-halve/<b>ticks</b></p>
   <h1>TICKS</h1>
-  <p class="lede">Every tick the program has made, newest first. Each row is one transaction — not a summary of several, not an average. The delta is how much the pool's reserve had to move since the last tick before this one was even allowed to fire.</p>
+  <p class="lede">Every tick the program has made, newest first. Each row is one transaction. Every field is written by the tick instruction itself, in the same transaction that did the buying, burning and selling, so a row is a receipt, not a reconstruction.</p>
+  <p class="note">Plain text of this page: <a href="/text/ticks.txt">/text/ticks.txt</a></p>
 </header>
 
-<div class="col"><div class="tbl-wrap wide data" data-ticks><table><thead></thead><tbody></tbody></table></div>
-<div class="tbl-foot wide"><span data-ticks-count></span><button class="btn" type="button" data-more>show 25 more</button></div></div>
-
-<div class="col"><p>Nothing on this page is derived after the fact. Every field here is written by the tick instruction itself, in the same transaction that did the buying, burning, and order-writing — so a tick's row is a receipt for exactly what happened, not a reconstruction of it. <code>reserve_before</code> and <code>reserve_after</code> are the pool's SOL reserve at the moment the tick checked its trigger and the moment it finished; delta is the absolute difference between them, and it's what had to clear 0.15 SOL for this tick to be allowed to run at all.</p>
-<figure class="fig" id="fig-receipt" aria-label="the newest tick as a receipt">
-  <div class="receipt" data-receipt></div>
-  <figcaption class="fig__cap"><span><b>fig. 1</b> &nbsp;newest tick, fields in the order the instruction writes them</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
-</figure></div>
-
-<div class="col reveal"><p><code>mass_before</code> and <code>mass_after</code> show what the clock held going into the burn arm and what was left after the payout arm took its share — the two numbers bracket the whole instruction. <code>buy_sol</code> and <code>burned_tokens</code> are the burn arm's own receipt: how much SOL went into the pool, and how many tokens came back and got destroyed in the same instruction. <code>sol_usd</code> is the Pyth price read at that exact moment, which is what turns the payout arm's SOL slice into a dollar figure worth writing orders against.</p>
-<p><code>spill_sol</code>, <code>spill_usd</code>, and <code>spill_bps</code> are the payout arm's version of the same thing — how much left the clock, what it was worth, and what share of mass that represented under the current era's split. window, <code>cursor_before</code>, and <code>cursor_after</code> describe who actually got paid: how many consecutive roster positions this tick reached, and where the cursor started and ended. <code>roster_len</code> and <code>roster_root</code> are the roster exactly as it stood at that moment — the thing that lets anyone later prove a given handle was or wasn't reachable by this specific tick.</p></div>
-
-<div class="col"><dl class="gloss ">
-<div><dt>tick index</dt><dd>which tick this is, in order</dd></div>
-<div><dt>era</dt><dd>which era was active when this tick fired</dd></div>
-<div><dt>reserve_before, reserve_after</dt><dd>pool SOL reserve, before and after</dd></div>
-<div><dt>delta</dt><dd>the absolute difference, what had to clear the trigger</dd></div>
-<div><dt>mass_before, mass_after</dt><dd>clock balance, before and after</dd></div>
-<div><dt>buy_sol, burned_tokens</dt><dd>the burn arm's receipt</dd></div>
-<div><dt>sol_usd</dt><dd>the Pyth price read in this instruction</dd></div>
-<div><dt>spill_sol, spill_usd, spill_bps</dt><dd>the payout arm's receipt</dd></div>
-<div><dt>window, cursor_before, cursor_after</dt><dd>who was paid, and where the cursor moved</dd></div>
-<div><dt>roster_len, roster_root</dt><dd>the roster at that exact moment</dd></div>
-</dl>
-<div class="tbl-wrap wide"><table class="rules">
-<thead><tr><th>rule</th><th>detail</th></tr></thead>
-<tbody>
-<tr><td>source</td><td>one account per tick, written inside the tick instruction itself</td></tr>
-<tr><td>reserve_before, reserve_after</td><td>the pool's SOL reserve at trigger-check and at completion</td></tr>
-<tr><td>delta</td><td>|reserve_after - reserve_before|, must have cleared the trigger to fire at all</td></tr>
-<tr><td>mass_before, mass_after</td><td>clock balance bracketing the whole instruction</td></tr>
-<tr><td>buy_sol, burned_tokens</td><td>SOL spent by the burn arm, tokens burned in the same instruction</td></tr>
-<tr><td>sol_usd</td><td>Pyth SOL/USD read in this instruction</td></tr>
-<tr><td>spill_sol, spill_usd, spill_bps</td><td>payout arm's SOL, its dollar value, and the era's payout share</td></tr>
-<tr><td>window, cursor_before, cursor_after</td><td>how many handles were paid, and the cursor's start/end</td></tr>
-<tr><td>roster_len, roster_root</td><td>the roster as it stood at this tick, provable after the fact</td></tr>
-</tbody></table></div></div>
+<div class="col"><p>A tick fires when the clock&#x27;s unticked balance is at least 0.15 SOL. reserve_before and reserve_after are the pool&#x27;s SOL reserve before and after the tick&#x27;s own buy. They are recorded as data. They are not the trigger.</p>
+<p>mass_before and mass_after show what the clock held going into the tick and what was left after both arms. buy_sol and burned_tokens are the burn arm&#x27;s receipt. sol_usd is the Pyth price read in the same instruction. spill_sol, spill_usdc and spill_bps are the payout arm&#x27;s receipt: the SOL sold, the USDC it returned into outbound, and the era&#x27;s payout share. The tick pays nobody. That USDC waits in outbound until advance moves it to zhalve_claims.</p>
+<p>roster_len and roster_root are the roster as it stood at that moment.</p>
+<dl class="gloss"><div><dt>tick index</dt><dd>which tick this is, in order</dd></div><div><dt>era</dt><dd>which era was active</dd></div><div><dt>reserve_before, reserve_after</dt><dd>pool SOL reserve around the tick&#x27;s own buy</dd></div><div><dt>mass_before, mass_after</dt><dd>clock balance, before and after</dd></div><div><dt>buy_sol, burned_tokens</dt><dd>the burn arm&#x27;s receipt</dd></div><div><dt>sol_usd</dt><dd>the Pyth price read in this instruction</dd></div><div><dt>spill_sol, spill_usdc, spill_bps</dt><dd>the payout arm&#x27;s receipt</dd></div><div><dt>roster_len, roster_root</dt><dd>the roster at that moment</dd></div></dl>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>source</td><td>one account per tick, written inside the tick instruction</td></tr><tr><td>trigger</td><td>unticked_balance &gt;= 0.15 SOL</td></tr><tr><td>reserve_before, reserve_after</td><td>recorded around the buy; data, not a trigger</td></tr><tr><td>buy_sol, burned_tokens</td><td>SOL spent by the burn arm, tokens burned in the same instruction</td></tr><tr><td>sol_usd</td><td>Pyth SOL/USD read in this instruction</td></tr><tr><td>spill_sol, spill_usdc, spill_bps</td><td>SOL sold, USDC received into outbound, the era&#x27;s payout share</td></tr><tr><td>roster_len, roster_root</td><td>the roster as it stood at this tick</td></tr></tbody></table></div></div>
 </main>
 <footer class="foot">
-  <span>z/halve</span>
-  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/zec">zec</a><a href="/program">program</a></nav>
+  <span>z/halve · not deployed · not audited</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/private">private</a><a href="/circuits">circuits</a><a href="/relayer">relayer</a><a href="/novelty">novelty</a><a href="/limits">limits</a><a href="/status">status</a><a href="/program">program</a></nav>
 </footer>
-<script src="/assets/data/state.js"></script>
-<script src="/assets/data/ticks.js" defer></script>
 <script src="/assets/site.js" defer></script>
-<script src="/assets/js/ticks.js" defer></script>
 </body>
 </html>

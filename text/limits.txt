@@ -1,0 +1,33 @@
+LIMITS
+------
+What z/halve's private claims do not do. Each line is a limit of the design or of its current state. None of them is fixed by a config change.
+
+rule              detail
+amounts public    every claim's amount is onchain. the amount reveals the tier
+tier public       a follower's tier comes from their bound wallet, which is public
+anonymity set     the set is the tier's live members for that round. not all followers.
+                  a tier with 20 members hides a claim among 20
+relayer leaks     a relayer sees the network origin, the recipient, the tier and the time of
+                  each claim. one relayer sees every claim it handles
+timing leaks      a claim soon after a bind, or alone in a quiet hour, narrows the set.
+                  moving funds soon after claiming does the same
+operator view     the attestor and anyone reading X see which handles follow, bind a
+                  wallet and bind a commitment. the roster is public by design
+lost secret       a lost secret means every claim it would have made is lost. nobody can
+                  recover it
+weak secret       a guessable secret lets anyone link the handle to its claims
+unaudited         no audit of zhalve, zhalve_claims or the circuit has been done
+upgradable        zhalve_claims keeps its upgrade authority until an audit. that authority
+                  could replace the program and take the inbox and the current pool
+setup             the verifying key is from a local setup, not a real ceremony. whoever ran
+                  it could forge proofs
+tier gaming       the tier is read once, at registration. a follower can buy coin, register,
+                  and sell
+attestor trust    a dishonest attestor could bind its own commitment to a handle
+removal timing    a removal during the claim window takes effect only when someone runs
+                  deregister
+unclaimed         an unclaimed share is burned. it does not roll to the follower
+legal risk        unlinkable withdrawals carry legal risk. developers of a similar system
+                  have faced criminal prosecution. get a lawyer before any mainnet use
+not deployed      nothing has run on devnet or mainnet. the claim flow has run only in
+                  LiteSVM, and on a local validator up to registration and deregister

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>limits · z/halve</title>
+<meta name="description" content="What z/halve&#x27;s private claims do not do.">
+<meta name="theme-color" content="#f3eee3">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-page="limits">
+<a class="skip" href="#main">skip to content</a>
+<header class="bar">
+  <nav class="bar__inner" aria-label="sections">
+    <a class="brand" href="/">z<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/private">private</a></li><li><a href="/circuits">circuits</a></li><li><a href="/relayer">relayer</a></li><li><a href="/novelty">novelty</a></li><li><a href="/limits" aria-current="page">limits</a></li><li><a href="/status">status</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
+  </nav>
+</header>
+<main id="main" class="page">
+<header class="head col">
+  <p class="path">~/z-halve/<b>limits</b></p>
+  <h1>LIMITS</h1>
+  <p class="lede">What z/halve&#x27;s private claims do not do. Each line is a limit of the design or of its current state. None of them is fixed by a config change.</p>
+  <p class="note">Plain text of this page: <a href="/text/limits.txt">/text/limits.txt</a></p>
+</header>
+
+<div class="col"><div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>amounts public</td><td>every claim&#x27;s amount is onchain. the amount reveals the tier</td></tr><tr><td>tier public</td><td>a follower&#x27;s tier comes from their bound wallet, which is public</td></tr><tr><td>anonymity set</td><td>the set is the tier&#x27;s live members for that round. not all followers. a tier with 20 members hides a claim among 20</td></tr><tr><td>relayer leaks</td><td>a relayer sees the network origin, the recipient, the tier and the time of each claim. one relayer sees every claim it handles</td></tr><tr><td>timing leaks</td><td>a claim soon after a bind, or alone in a quiet hour, narrows the set. moving funds soon after claiming does the same</td></tr><tr><td>operator view</td><td>the attestor and anyone reading X see which handles follow, bind a wallet and bind a commitment. the roster is public by design</td></tr><tr><td>lost secret</td><td>a lost secret means every claim it would have made is lost. nobody can recover it</td></tr><tr><td>weak secret</td><td>a guessable secret lets anyone link the handle to its claims</td></tr><tr><td>unaudited</td><td>no audit of zhalve, zhalve_claims or the circuit has been done</td></tr><tr><td>upgradable</td><td>zhalve_claims keeps its upgrade authority until an audit. that authority could replace the program and take the inbox and the current pool</td></tr><tr><td>setup</td><td>the verifying key is from a local setup, not a real ceremony. whoever ran it could forge proofs</td></tr><tr><td>tier gaming</td><td>the tier is read once, at registration. a follower can buy coin, register, and sell</td></tr><tr><td>attestor trust</td><td>a dishonest attestor could bind its own commitment to a handle</td></tr><tr><td>removal timing</td><td>a removal during the claim window takes effect only when someone runs deregister</td></tr><tr><td>unclaimed</td><td>an unclaimed share is burned. it does not roll to the follower</td></tr><tr><td>legal risk</td><td>unlinkable withdrawals carry legal risk. developers of a similar system have faced criminal prosecution. get a lawyer before any mainnet use</td></tr><tr><td>not deployed</td><td>nothing has run on devnet or mainnet. the claim flow has run only in LiteSVM, and on a local validator up to registration and deregister</td></tr></tbody></table></div></div>
+</main>
+<footer class="foot">
+  <span>z/halve · not deployed · not audited</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/private">private</a><a href="/circuits">circuits</a><a href="/relayer">relayer</a><a href="/novelty">novelty</a><a href="/limits">limits</a><a href="/status">status</a><a href="/program">program</a></nav>
+</footer>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

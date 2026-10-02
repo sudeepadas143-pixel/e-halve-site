@@ -1,0 +1,38 @@
+NOVELTY
+-------
+Most of z/halve's privacy is borrowed. This page separates what this repository puts together from the pieces it takes from earlier work. "New here" means new in this design, not a claim that nobody has done it anywhere.
+
+NEW HERE
+--------
+rule              detail
+halving + claims  a burn share that halves every four weeks, with the payout share of each
+                  era paid through private claims in the next era
+tier as the set   one tree per holder tier per round, so the anonymity set is the tier and
+                  every claim in a tier pays the same amount
+weighted amounts  amount per tier from the pool by tier weight 1, 2, 3, fixed when the round
+                  opens, with tiers under 20 members left closed
+roster removal    numbered removal records from the frozen program, processed in order, and
+                  a round that cannot open until every removed leaf is zeroed
+unclaimed burns   whatever is not claimed in the window is sold and burned
+one-way coupling  the frozen program pays into the claims inbox and never calls or reads the
+                  claims program, so the claims program cannot stop the halving or the burn
+
+BORROWED FROM
+-------------
+rule              detail
+Zcash             commitments to secrets, and nullifiers that mark a spend without saying
+                  which commitment it spent. introduced in the Zerocash paper (Ben-Sasson
+                  et al., 2014) that Zcash grew from
+nullifiers        the per-round nullifier, Poseidon(2, secret, round), follows the same idea
+                  with an external value mixed in, as in Semaphore's external nullifier
+withdraw pattern  a deposit-tree and withdraw-with-relayer flow with recipient and fee bound
+                  into the proof, as in Tornado Cash. developers of that project have faced
+                  criminal prosecution
+Poseidon          a hash built for zero knowledge circuits (Grassi et al.). circomlib's
+                  parameters in the circuit, the sol_poseidon syscall onchain
+Groth16           Jens Groth's 2016 proof system. circom and snarkjs make the circuit and
+                  proofs. groth16-solana (Light Protocol) verifies onchain with Solana's
+                  alt_bn128 syscalls
+incremental tree  the frontier Merkle tree used by deposit contracts and Tornado Cash, here
+                  with leaf removal added
+halving           bitcoin's block reward schedule, on a four-week clock

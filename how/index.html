@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>how — z/halve</title>
-<meta name="description" content="z/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks.">
+<title>how · z/halve</title>
+<meta name="description" content="z/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin&#x27;s, compressed from four years to four weeks.">
 <meta name="theme-color" content="#f3eee3">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,138 +18,85 @@
 <header class="bar">
   <nav class="bar__inner" aria-label="sections">
     <a class="brand" href="/">z<span>/</span>halve</a>
-    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how" aria-current="page">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/zec">zec</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
-    <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how" aria-current="page">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/private">private</a></li><li><a href="/circuits">circuits</a></li><li><a href="/relayer">relayer</a></li><li><a href="/novelty">novelty</a></li><li><a href="/limits">limits</a></li><li><a href="/status">status</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
   </nav>
 </header>
 <main id="main" class="page">
 <header class="head col">
   <p class="path">~/z-halve/<b>how</b></p>
   <h1>HOW Z/HALVE WORKS</h1>
-  <figure class="hero" id="fig-hero" aria-label="the z/halve machine">
-    <div class="hero__plate" data-hero></div>
-    <figcaption class="fig__cap"><span><b>fig. 0</b> &nbsp;the machine, one tick per era · era 0 → 2</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
-  </figure>
-  <p class="lede">z/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin's, compressed from four years to four weeks. Every follower it pays is paid in shielded ZEC. The amounts are public. Where they land is not. Creator fees fund the whole thing. Every trade on pump.fun pays the standard fee, and the creator's share is claimed into a program vault called the clock. The program that owns the clock has no instruction that lets anyone take from it. SOL only leaves through a tick, and a tick can only fire once the clock has taken in enough to be worth moving.</p>
-  <p>A tick is the whole mechanism in one instruction. It buys the coin from the pool with a slice of the clock and burns what it bought. It reads the SOL price from Pyth, takes a second slice, swaps it to USDC into an outbound vault, and writes one order per handle in the current window of the roster. How the slice splits between burn and orders is set by the era. Nothing here is decided by anyone. There is no vote, no operator switch, no discretionary schedule. The one human in the loop is the hand, and the hand can only do one thing: pay an order that already exists, in shielded ZEC, and settle it.</p>
+  <p class="lede">z/halve is a coin that halves its own burn rate on a fixed clock, the same shape as bitcoin&#x27;s, compressed from four years to four weeks. Two programs run it. zhalve runs the clock, the burn and the halving. zhalve_claims pays followers. A follower claims a share of each era&#x27;s payout with a zero knowledge proof that they belong to their tier, without saying which follower they are. The amounts are public. Which follower took which payment is not.</p>
+  <p class="note">Plain text of this page: <a href="/text/how.txt">/text/how.txt</a></p>
 </header>
 
-<div class="col"><figure class="fig wide" id="fig-flow" aria-label="flow of one tick">
-  <div class="flow">
-    <div>
-      <pre class="ascii" data-flow>    creator fees
-         |
-         v
-     the clock -----------------------------
-         |                                  |
-         v                                  v
-      burn arm                        payout arm
-         |                                  |
-         v                                  v
-      buy + burn                      write orders
-                                            |
-                                            v
-                                     hand pays zec
-                                            |
-                                            v
-                                        settle</pre>
-      <div class="step" data-step aria-live="polite"></div>
-    </div>
-    <div class="tbl-wrap"><table class="rules">
-<thead><tr><th>rule</th><th>detail</th></tr></thead>
-<tbody>
-<tr data-step="1"><td>pool trade</td><td>any swap on the pool</td></tr>
-<tr data-step="2"><td>tick trigger</td><td>clock balance since last tick &gt;= 0.15 SOL</td></tr>
-<tr data-step="3"><td>tick</td><td>anyone can crank it</td></tr>
-<tr data-step="4" class="burn"><td>burn from pool</td><td>at most 30 bps of spot</td></tr>
-<tr data-step="4" class="burn"><td>burn</td><td>same instruction</td></tr>
-<tr data-step="4" class="pay"><td>write orders</td><td>one order per window position</td></tr>
-<tr data-step="5" class="pay"><td>hand pays</td><td>the order's USDC swapped to shielded ZEC, sent to the follower's own address</td></tr>
-<tr data-step="6" class="pay"><td>settle</td><td>USDC released to the hand against a payout reference</td></tr>
-</tbody></table></div>
-  </div>
-  <figcaption class="fig__cap"><span><b>fig. 1</b> &nbsp;one tick, fees to settle</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
-</figure></div>
+<div class="col"><p>Creator fees fund the whole thing. Every trade on pump.fun pays the standard fee, and the creator&#x27;s share is claimed into a program vault called the clock. zhalve has no instruction that lets anyone take from the clock. SOL only leaves through a tick, and a tick can only fire once the clock has taken in enough to be worth moving.</p>
+<p>A tick is one instruction. It buys the coin from the pool with a slice of the clock and burns what it bought. It reads the SOL price from Pyth, sells the rest of the slice for USDC, and holds that USDC in the outbound vault. How the slice splits between burn and payout is set by the era. Nobody decides it. There is no vote, no operator switch and no discretionary schedule.</p>
+<p>At the end of each era, advance halves the burn share and moves the era&#x27;s USDC to zhalve_claims. During the next era, followers claim it. Whatever nobody claims is sold, used to buy the coin, and burned.</p>
+<p>Nothing is deployed. Nothing is audited. See status and limits.</p>
+<div class="wide"><pre class="ascii">creator fees
+     |
+     v
+ the clock -----------------------------
+     |                                  |
+     v                                  v
+  burn arm                        payout arm
+     |                                  |
+     v                                  v
+  buy + burn                      usdc in outbound
+                                        |
+                                        v   advance, end of era
+                                  zhalve_claims pool
+                                        |
+                      ------------------------------------
+                      |                                  |
+                      v                                  v
+              private claims, next era          unclaimed: buy + burn</pre></div>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>pool trade</td><td>any swap on the pool</td></tr><tr><td>tick trigger</td><td>unticked clock balance &gt;= 0.15 SOL</td></tr><tr><td>tick</td><td>anyone can crank it</td></tr><tr><td>burn from pool</td><td>at most 30 bps of spot</td></tr><tr><td>burn</td><td>same instruction</td></tr><tr><td>payout arm</td><td>sells the payout share for USDC into outbound. pays nobody</td></tr><tr><td>advance</td><td>every 4 weeks. halves the burn share and moves outbound to the claims inbox</td></tr><tr><td>claim</td><td>a Groth16 proof of tier membership. pays USDC on Solana</td></tr><tr><td>sweep</td><td>what is not claimed in the window is sold and burned</td></tr></tbody></table></div></div>
 
 <section class="sec col" id="the-trigger" aria-labelledby="the-trigger-h">
   <span class="sec__label"><a href="#the-trigger">§1</a></span>
   <h2 id="the-trigger-h">THE TRIGGER</h2>
-<p>Most fee loops fire on a timer for the trade itself. z/halve doesn't. The clock reads its own unticked balance, not a schedule, to decide whether a tick can fire at all. On every call to tick it checks fees claimed since the last tick. If that's at least 0.15 SOL, the tick proceeds. If not, the instruction fails and nothing changes, not even the stored balance. A busy hour can fire several ticks in a row. A quiet week fires none. The clock is quiet when the coin is quiet.</p>
-<div class="tbl-wrap"><table class="rules">
-<thead><tr><th>rule</th><th>detail</th></tr></thead>
-<tbody>
-<tr><td>trigger</td><td>unticked_balance &gt;= 0.15 SOL</td></tr>
-<tr><td>who calls it</td><td>anyone. tick is permissionless, the keeper is a convenience, not a permission</td></tr>
-<tr><td>failed call</td><td>changes nothing, including the stored balance</td></tr>
-</tbody></table></div>
+<p>The clock reads its own unticked balance, not a schedule, to decide whether a tick can fire. On every call to tick it checks the fees claimed since the last tick. If that is at least 0.15 SOL, the tick proceeds. If not, the instruction fails and nothing changes, not even the stored balance. A busy hour can fire several ticks. A quiet week fires none.</p>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>trigger</td><td>unticked_balance &gt;= 0.15 SOL</td></tr><tr><td>who calls it</td><td>anyone. tick is permissionless</td></tr><tr><td>failed call</td><td>changes nothing, including the stored balance</td></tr></tbody></table></div>
 </section>
 
 <section class="sec col" id="the-era" aria-labelledby="the-era-h">
   <span class="sec__label"><a href="#the-era">§2</a></span>
   <h2 id="the-era-h">THE ERA</h2>
-<p>The tick decides how much to burn versus how much to pay out, and that ratio is fixed by the era, not by anyone's judgment. Genesis is era 0: the clock burns everything, pays nothing out. Every four weeks, anyone can call advance. Advancing halves the burn share and gives the rest to payouts, the same curve bitcoin's block reward follows, run on a four-week clock instead of a four-year one. Below 100 bps, burn stops halving and holds there — the clock keeps burning something, forever, instead of decaying to zero.</p>
-<figure class="fig wide stair" id="fig-era" aria-label="burn share by era">
-  <div data-stair></div>
-  <div class="tbl-wrap"><table class="era-tbl">
-<thead><tr><th>era</th><th>burn share</th><th>payout share</th><th>split</th></tr></thead>
-<tbody>
-<tr data-era="0"><td>0 (genesis)</td><td>100%</td><td>0%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:100%"></i><i class="p"></i></div></td></tr>
-<tr data-era="1"><td>1</td><td>50%</td><td>50%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:50%"></i><i class="p"></i></div></td></tr>
-<tr data-era="2"><td>2</td><td>25%</td><td>75%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:25%"></i><i class="p"></i></div></td></tr>
-<tr data-era="3"><td>3</td><td>12.5%</td><td>87.5%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:12.5%"></i><i class="p"></i></div></td></tr>
-<tr data-era="4"><td>4</td><td>6.25%</td><td>93.75%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:6.25%"></i><i class="p"></i></div></td></tr>
-<tr data-era="floor"><td>floor</td><td>1%</td><td>99%</td><td style="width:38%"><div class="bars" aria-hidden="true"><i class="b" style="width:1%"></i><i class="p"></i></div></td></tr>
-</tbody></table></div>
-  <figcaption class="fig__cap"><span><b>fig. 2</b> &nbsp;burn_bps, log scale, one step per era</span><span data-stair-read></span></figcaption>
-</figure>
-<div class="tbl-wrap"><table class="rules">
-<thead><tr><th>rule</th><th>detail</th></tr></thead>
-<tbody>
-<tr><td>era length</td><td>4 weeks, fixed</td></tr>
-<tr><td>advance</td><td>anyone can call it once era_start &gt;= 4 weeks old</td></tr>
-<tr><td>effect</td><td>burn_bps halves, floors at 100 bps</td></tr>
-<tr><td>failed call</td><td>fails if 4 weeks haven't passed. changes nothing</td></tr>
-</tbody></table></div>
+<p>The era fixes the split between burn and payout. Era 0 burns everything and pays nothing. Every four weeks, anyone can call advance. It halves the burn share and gives the rest to payouts, the same curve as bitcoin&#x27;s block reward on a four-week clock. At 100 bps the burn share stops halving and holds there, so the clock always burns something.</p>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>era</th><th>burn share</th><th>payout share</th></tr></thead><tbody><tr><td>0 (genesis)</td><td>100%</td><td>0%</td></tr><tr><td>1</td><td>50%</td><td>50%</td></tr><tr><td>2</td><td>25%</td><td>75%</td></tr><tr><td>3</td><td>12.5%</td><td>87.5%</td></tr><tr><td>4</td><td>6.25%</td><td>93.75%</td></tr><tr><td>floor</td><td>1%</td><td>99%</td></tr></tbody></table></div>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>era length</td><td>4 weeks, fixed</td></tr><tr><td>advance</td><td>anyone can call it once era_start is 4 weeks old</td></tr><tr><td>effect</td><td>burn_bps halves, floors at 100 bps. outbound USDC moves to the claims inbox</td></tr><tr><td>failed call</td><td>fails if 4 weeks haven&#x27;t passed. changes nothing</td></tr><tr><td>claims program</td><td>cannot stop advance. if its inbox is missing or unusable, advance skips the transfer and still halves</td></tr></tbody></table></div>
 </section>
 
-<section class="sec col reveal" id="the-burn-arm" aria-labelledby="the-burn-arm-h">
+<section class="sec col" id="the-burn-arm" aria-labelledby="the-burn-arm-h">
   <span class="sec__label"><a href="#the-burn-arm">§3</a></span>
   <h2 id="the-burn-arm-h">THE BURN ARM</h2>
-<p>The first thing a tick does is make the coin scarcer. It takes the era's burn share of the tick's fee slice and buys the coin from the pool, capped at 30 bps of price impact regardless of what the share would otherwise allow. The tokens received are burned inside the same instruction. They are never held, never sold, never staked. Supply only goes down, and every burn is one transaction on the explorer with the tick's signature.</p>
+<p>The first thing a tick does is make the coin scarcer. It takes the era&#x27;s burn share of the slice and buys the coin from the pool, capped at 30 bps of price impact. The tokens are burned in the same instruction. They are never held, sold or staked. Supply only goes down.</p>
 </section>
 
-<section class="sec col reveal" id="the-payout-arm" aria-labelledby="the-payout-arm-h">
+<section class="sec col" id="the-payout-arm" aria-labelledby="the-payout-arm-h">
   <span class="sec__label"><a href="#the-payout-arm">§4</a></span>
   <h2 id="the-payout-arm-h">THE PAYOUT ARM</h2>
-<p>After the burn, the tick takes the payout share of the same fee slice, converts it to dollars at the Pyth SOL price read in the same instruction, and swaps it to USDC into the outbound vault. Then it decides how many handles get paid. The window is the roster length divided by 64, rounded up, held between 4 and 64. If splitting the dollars that many ways would give anyone less than 25 cents, the window shrinks until every order is at least 25 cents. If not even one 25-cent order can be written, the payout is skipped, the SOL stays in the clock, and the cursor doesn't move. Nobody gets dust.</p>
+<p>After the burn, the tick takes the payout share of the same slice, reads the Pyth SOL price, and sells the SOL for USDC into the outbound vault. The swap must return at least the oracle value less 50 bps or the whole tick fails. The tick writes no orders and pays nobody. The USDC waits in outbound until the era ends.</p>
 </section>
 
-<section class="sec col" id="the-roster-window-cursor-and-holder-weight" aria-labelledby="the-roster-window-cursor-and-holder-weight-h">
-  <span class="sec__label"><a href="#the-roster-window-cursor-and-holder-weight">§5</a></span>
-  <h2 id="the-roster-window-cursor-and-holder-weight-h">THE ROSTER, WINDOW, CURSOR, AND HOLDER WEIGHT</h2>
-<p>Same mechanism as any follower-paid coin needs: the roster is the follower list of the project's X account, written onchain, one account per follower keyed by the hash of their lowercase handle. The window pays consecutive positions starting at the cursor, and the cursor advances by the window size every tick, wrapping at the end. A follower who binds a wallet — posting the address on X, then sending a memo transaction with that post's id — can be weighted higher. Holding at least 0.15% of supply gets weight 2, at least 0.75% gets weight 3, and the payout splits by weight across the window.</p>
-<figure class="fig wide" id="fig-ring" aria-label="cursor advancing around the roster ring">
-  <div class="ring">
-    <div data-ring></div>
-    <dl class="readout" data-ring-read></dl>
-  </div>
-  <figcaption class="fig__cap"><span><b>fig. 3</b> &nbsp;roster_len 42 · window clamp(ceil(42 / 64), 4, 64) = 4</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
-</figure>
+<section class="sec col" id="the-roster-and-tiers" aria-labelledby="the-roster-and-tiers-h">
+  <span class="sec__label"><a href="#the-roster-and-tiers">§5</a></span>
+  <h2 id="the-roster-and-tiers-h">THE ROSTER AND TIERS</h2>
+<p>The roster is the follower list of the project&#x27;s X account, written onchain, one account per follower keyed by the hash of their lowercase handle. The X handle is identity only. No payment goes through X. A follower can bind a wallet and a claim commitment by posting them from the handle. The wallet sets the tier: at least 0.15% of supply is tier 2, at least 0.75% is tier 3, everyone else is tier 1. The commitment is what lets the follower claim later without revealing which handle they are.</p>
 </section>
 
-<section class="sec col reveal" id="orders" aria-labelledby="orders-h">
-  <span class="sec__label"><a href="#orders">§6</a></span>
-  <h2 id="orders-h">ORDERS</h2>
-<p>Every payment starts as an order the program writes during a tick — a handle, an amount in cents, the tick it came from. It opens. It settles once the hand pays it in shielded ZEC and records a reference. It voids only if the handle unfollows before it's paid, in which case the cents return to the clock for the next tick. There is no expiry. An open order stays open until it's paid or the handle leaves.</p>
+<section class="sec col" id="claims" aria-labelledby="claims-h">
+  <span class="sec__label"><a href="#claims">§6</a></span>
+  <h2 id="claims-h">CLAIMS</h2>
+<p>Each era&#x27;s USDC becomes a round in zhalve_claims. During the era, anyone can register followers into their tier&#x27;s tree. When the era ends, the round opens for claims. A tier opens only if it has at least 20 live members. One claim pays the same amount to everyone in a tier, and tiers are weighted 1, 2 and 3. A claim needs a Groth16 proof of membership and a nullifier, which stops the same secret claiming twice in a round. The full flow is on the private page.</p>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>round r</td><td>the USDC collected during era r</td></tr><tr><td>registration</td><td>during era r. tier read from the bound wallet at that moment</td></tr><tr><td>claim window</td><td>era r + 1</td></tr><tr><td>open tier</td><td>at least 20 live members (a config guess)</td></tr><tr><td>amount</td><td>pool share by tier weight, fixed when the round opens</td></tr><tr><td>relayer fee</td><td>public, at most 5% of the claim (a config guess)</td></tr><tr><td>unclaimed</td><td>sold and burned after the window, at most 30 bps of impact per call</td></tr></tbody></table></div>
 </section>
 </main>
 <footer class="foot">
-  <span>z/halve</span>
-  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/zec">zec</a><a href="/program">program</a></nav>
+  <span>z/halve · not deployed · not audited</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/private">private</a><a href="/circuits">circuits</a><a href="/relayer">relayer</a><a href="/novelty">novelty</a><a href="/limits">limits</a><a href="/status">status</a><a href="/program">program</a></nav>
 </footer>
-<script src="/assets/data/state.js"></script>
 <script src="/assets/site.js" defer></script>
-<script src="/assets/js/hero.js" defer></script>
-<script src="/assets/js/how.js" defer></script>
 </body>
 </html>

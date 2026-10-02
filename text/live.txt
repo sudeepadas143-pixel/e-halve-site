@@ -1,0 +1,34 @@
+LIVE
+----
+Nothing is deployed, so nothing on this page has a live value yet. Once both programs are deployed, every number here comes from the same accounts the programs read. Nothing is computed off to the side.
+
+Mass is what the clock holds, unticked. It grows only through claim_fees and shrinks only through a tick. Outbound is the USDC the payout arm has collected this era. It grows with each tick and goes to zero at advance, when it moves to the claims inbox.
+
+Burned in total counts the coin burned by ticks and by sweeps. Funded in total counts the USDC advance has moved to claims. Claimed counts what followers have taken from the current round. The gap between a round's pool and its claimed total is what the sweep will burn.
+
+Era decides the split. The burn share halves at each advance and floors at 100 bps. Next era is the time until advance becomes callable, not a promise that someone will call it.
+
+mass               current SOL in the clock, unticked
+outbound           USDC collected this era, waiting for advance
+burned in total    coin burned by ticks, plus coin burned by sweeps
+funded in total    USDC moved to zhalve_claims, all time
+era                current era number
+burn share         current burn_bps, halves each era, floors at 100 bps
+next era           time until advance can be called
+round              the round open for claims, and its status
+pool               USDC in the claims pool
+claimed            USDC paid out of the current round, and the number of claims
+tiers              live members per tier, which tiers opened, and what one claim pays
+
+rule              detail
+mass              zhalve state.unticked_balance
+outbound          zhalve outbound vault balance
+burned in total   zhalve state.total_burned plus the sum of round.burned_tokens
+funded in total   zhalve state.total_funded
+era               zhalve state.era
+burn share        zhalve state.burn_bps
+next era          max(0, era_start + 4 weeks - now)
+round             zhalve_claims config.pool_round and round.status
+pool              zhalve_claims pool balance
+claimed           round.claimed_total and round.claims
+tiers             round.live_at_fund, round.open, round.amounts

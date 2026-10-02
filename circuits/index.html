@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>circuits · z/halve</title>
+<meta name="description" content="One circuit, claim.circom, written in circom and proved with Groth16 through snarkjs.">
+<meta name="theme-color" content="#f3eee3">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-page="circuits">
+<a class="skip" href="#main">skip to content</a>
+<header class="bar">
+  <nav class="bar__inner" aria-label="sections">
+    <a class="brand" href="/">z<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/private">private</a></li><li><a href="/circuits" aria-current="page">circuits</a></li><li><a href="/relayer">relayer</a></li><li><a href="/novelty">novelty</a></li><li><a href="/limits">limits</a></li><li><a href="/status">status</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
+  </nav>
+</header>
+<main id="main" class="page">
+<header class="head col">
+  <p class="path">~/z-halve/<b>circuits</b></p>
+  <h1>CIRCUITS</h1>
+  <p class="lede">One circuit, claim.circom, written in circom and proved with Groth16 through snarkjs. zhalve_claims verifies the proofs onchain with groth16-solana. The numbers on this page are checked against the compiled files by tests.</p>
+  <p class="note">Plain text of this page: <a href="/text/circuits.txt">/text/circuits.txt</a></p>
+</header>
+
+<section class="sec col" id="what-a-proof-says" aria-labelledby="what-a-proof-says-h">
+  <span class="sec__label"><a href="#what-a-proof-says">§1</a></span>
+  <h2 id="what-a-proof-says-h">WHAT A PROOF SAYS</h2>
+<p>The prover knows a secret such that Poseidon(Poseidon(1, secret), tier) is a leaf under root, that leaf is not zero, and nullifier = Poseidon(2, secret, round). It does not say which leaf. tier is 1, 2 or 3. round fits in 32 bits, fee in 64 bits, each pubkey half in 128 bits. recipient, relayer and fee are public inputs, so a proof made for one value does not verify for another.</p>
+</section>
+
+<section class="sec col" id="public-inputs" aria-labelledby="public-inputs-h">
+  <span class="sec__label"><a href="#public-inputs">§2</a></span>
+  <h2 id="public-inputs-h">PUBLIC INPUTS</h2>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>#</th><th>input</th><th>from</th></tr></thead><tbody><tr><td>1</td><td>root</td><td>the tier tree account. never the caller</td></tr><tr><td>2</td><td>nullifier</td><td>the caller. must be below the field modulus</td></tr><tr><td>3</td><td>round</td><td>the instruction</td></tr><tr><td>4</td><td>tier</td><td>the instruction</td></tr><tr><td>5</td><td>recipient_hi</td><td>first 16 bytes of the recipient pubkey</td></tr><tr><td>6</td><td>recipient_lo</td><td>last 16 bytes of the recipient pubkey</td></tr><tr><td>7</td><td>relayer_hi</td><td>first 16 bytes of the relayer pubkey</td></tr><tr><td>8</td><td>relayer_lo</td><td>last 16 bytes of the relayer pubkey</td></tr><tr><td>9</td><td>fee</td><td>the instruction</td></tr></tbody></table></div>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>private inputs</td><td>41: the secret, 20 path hashes, 20 path bits</td></tr><tr><td>constraints</td><td>12661 (6286 non-linear, 6375 linear)</td></tr><tr><td>wires</td><td>12683</td></tr><tr><td>tree depth</td><td>20</td></tr><tr><td>powers of tau</td><td>2^14</td></tr><tr><td>hash</td><td>Poseidon over BN254, circomlib parameters. the same parameters run onchain through the sol_poseidon syscall</td></tr><tr><td>proof time</td><td>about 1.4 s in Node with snarkjs. one measurement, not a benchmark</td></tr></tbody></table></div>
+</section>
+
+<section class="sec col" id="verifying-key" aria-labelledby="verifying-key-h">
+  <span class="sec__label"><a href="#verifying-key">§3</a></span>
+  <h2 id="verifying-key-h">VERIFYING KEY</h2>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>key file</td><td>circuits/build/verification_key.json</td></tr><tr><td>sha256</td><td>71ef978ae017bd9f97582d7de57e297a6a306fa5e41f0614a1d8aabcf6ab74b3</td></tr><tr><td>in the program</td><td>programs/zhalve_claims/src/vk.rs, generated from the key file. a test regenerates it and compares byte for byte</td></tr><tr><td>consistency</td><td>tests check the key file is the key in the proving key, and the proving key verifies against the circuit and the local powers of tau</td></tr></tbody></table></div>
+</section>
+
+<section class="sec col" id="ceremony-state" aria-labelledby="ceremony-state-h">
+  <span class="sec__label"><a href="#ceremony-state">§4</a></span>
+  <h2 id="ceremony-state-h">CEREMONY STATE</h2>
+<p>Local setup. Not a real ceremony. One machine made the powers of tau and one phase 2 contribution. Whoever ran it could have kept the toxic waste and could forge proofs that drain every open tier of a round. A multi-contributor ceremony is planned in CEREMONY.md. It is not done.</p>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>phase 1</td><td>local, one contribution. not the public powers of tau</td></tr><tr><td>phase 2</td><td>local, one contribution</td></tr><tr><td>real ceremony</td><td>not done</td></tr><tr><td>consequence</td><td>the current key is for tests only</td></tr></tbody></table></div>
+</section>
+
+<section class="sec col" id="tests" aria-labelledby="tests-h">
+  <span class="sec__label"><a href="#tests">§5</a></span>
+  <h2 id="tests-h">TESTS</h2>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>honest proofs</td><td>every tier, first, middle and last leaf, fee 0 and the largest fee</td></tr><tr><td>refused inputs</td><td>wrong secret, root, nullifier, round or tier; zeroed leaf; values out of range; a path bit of 2</td></tr><tr><td>forged witnesses</td><td>built by hand and checked against every constraint: another nullifier, another round, a tier 1 leaf claiming tier 2, a foreign root, a zero leaf, out-of-range values. all fail</td></tr><tr><td>no free wire</td><td>changing any single wire of a valid witness breaks a constraint</td></tr><tr><td>binding</td><td>changing any of the nine public inputs makes verification fail</td></tr></tbody></table></div>
+</section>
+</main>
+<footer class="foot">
+  <span>z/halve · not deployed · not audited</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/private">private</a><a href="/circuits">circuits</a><a href="/relayer">relayer</a><a href="/novelty">novelty</a><a href="/limits">limits</a><a href="/status">status</a><a href="/program">program</a></nav>
+</footer>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

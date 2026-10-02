@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>status · z/halve</title>
+<meta name="description" content="Where z/halve stands.">
+<meta name="theme-color" content="#f3eee3">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-page="status">
+<a class="skip" href="#main">skip to content</a>
+<header class="bar">
+  <nav class="bar__inner" aria-label="sections">
+    <a class="brand" href="/">z<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/private">private</a></li><li><a href="/circuits">circuits</a></li><li><a href="/relayer">relayer</a></li><li><a href="/novelty">novelty</a></li><li><a href="/limits">limits</a></li><li><a href="/status" aria-current="page">status</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
+  </nav>
+</header>
+<main id="main" class="page">
+<header class="head col">
+  <p class="path">~/z-halve/<b>status</b></p>
+  <h1>STATUS</h1>
+  <p class="lede">Where z/halve stands. The test counts are from the last full run, recorded when this file was written.</p>
+  <p class="note">Plain text of this page: <a href="/text/status.txt">/text/status.txt</a></p>
+</header>
+
+<div class="col"><div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>deployed</td><td>nowhere. no devnet, no mainnet</td></tr><tr><td>audit</td><td>not done</td></tr><tr><td>ceremony</td><td>not done. the verifying key is from a local setup, not a real ceremony</td></tr><tr><td>legal review</td><td>not done</td></tr><tr><td>relayer</td><td>not built</td></tr><tr><td>client</td><td>not built. nothing makes secrets or proofs for followers yet</td></tr><tr><td>website</td><td>not updated for claims</td></tr><tr><td>zhalve</td><td>built. frozen at initialize once deployed</td></tr><tr><td>zhalve_claims</td><td>built. upgrade authority stays set until an audit</td></tr><tr><td>circuit</td><td>built. 12661 constraints</td></tr></tbody></table></div></div>
+
+<section class="sec col" id="tests" aria-labelledby="tests-h">
+  <span class="sec__label"><a href="#tests">§1</a></span>
+  <h2 id="tests-h">TESTS</h2>
+<p>All passing at the last run.</p>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>suite</th><th>result</th></tr></thead><tbody><tr><td>rust</td><td>18 passed (zhalve 6, zhalve_claims 12)</td></tr><tr><td>litesvm</td><td>81 passing (zhalve 48, zhalve_claims 33, with real Groth16 proofs)</td></tr><tr><td>circuit</td><td>21 passing</td></tr><tr><td>local validator</td><td>16 passing, 1 pending. a live validator cannot let four weeks pass, so fund_era, claim and sweep_to_burn run only in LiteSVM</td></tr></tbody></table></div>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>commands</td><td>npm run test:rust, test:svm, test:circuit, test:local</td></tr><tr><td>untested</td><td>listed row by row in ATTACK.md</td></tr><tr><td>config guesses</td><td>minimum anonymity set 20, relayer fee cap 5%</td></tr></tbody></table></div>
+</section>
+</main>
+<footer class="foot">
+  <span>z/halve · not deployed · not audited</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/private">private</a><a href="/circuits">circuits</a><a href="/relayer">relayer</a><a href="/novelty">novelty</a><a href="/limits">limits</a><a href="/status">status</a><a href="/program">program</a></nav>
+</footer>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

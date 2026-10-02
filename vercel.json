@@ -2,10 +2,45 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/", "destination": "/how", "permanent": false },
-    { "source": "/private", "destination": "/zec", "permanent": true }
+    {
+      "source": "/",
+      "destination": "/how",
+      "permanent": false
+    },
+    {
+      "source": "/zec",
+      "destination": "/private",
+      "permanent": true
+    },
+    {
+      "source": "/orders",
+      "destination": "/private",
+      "permanent": true
+    },
+    {
+      "source": "/hand",
+      "destination": "/private",
+      "permanent": true
+    }
   ],
   "headers": [
-    { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }] }
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/text/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
+    }
   ]
 }

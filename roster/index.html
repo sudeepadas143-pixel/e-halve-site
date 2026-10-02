@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>roster — z/halve</title>
-<meta name="description" content="The roster is the follower list of the project's X account, written onchain — not cached, not synced on a delay you have to trust.">
+<title>roster · z/halve</title>
+<meta name="description" content="The roster is the follower list of the project&#x27;s X account, written onchain.">
 <meta name="theme-color" content="#f3eee3">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,60 +18,29 @@
 <header class="bar">
   <nav class="bar__inner" aria-label="sections">
     <a class="brand" href="/">z<span>/</span>halve</a>
-    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster" aria-current="page">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/zec">zec</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
-    <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster" aria-current="page">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/private">private</a></li><li><a href="/circuits">circuits</a></li><li><a href="/relayer">relayer</a></li><li><a href="/novelty">novelty</a></li><li><a href="/limits">limits</a></li><li><a href="/status">status</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
   </nav>
 </header>
 <main id="main" class="page">
 <header class="head col">
   <p class="path">~/z-halve/<b>roster</b></p>
   <h1>ROSTER</h1>
-  <p class="lede">The roster is the follower list of the project's X account, written onchain — not cached, not synced on a delay you have to trust. Each follower is one account, keyed by the hash of their lowercase handle, holding a position number: the order in which they followed, oldest first. That position is what everything else on this page depends on — it's the coordinate the cursor moves along, tick after tick.</p>
+  <p class="lede">The roster is the follower list of the project&#x27;s X account, written onchain. Each follower is one account, keyed by the hash of their lowercase handle, holding a position number. The X handle is identity only. No payment goes through X.</p>
+  <p class="note">Plain text of this page: <a href="/text/roster.txt">/text/roster.txt</a></p>
 </header>
 
-<div class="col"><p>Before every tick that fires, the attestor reads the live follower list and reconciles it against what's written onchain. New followers get appended at the back. Anyone who unfollowed gets removed. If someone unfollows and follows again, they come back as a new entry at the back of the line — the roster doesn't remember old positions, only current ones. This is deliberate: following right now is the only thing that qualifies someone to be paid, not follower history.</p>
-<figure class="fig wide" id="fig-queue" aria-label="reconciling the roster before a tick">
-  <div class="queue">
-    <div class="queue__ends"><span>oldest first</span><span>back</span></div>
-    <div class="queue__row" data-queue></div>
-    <p class="queue__root">roster_root <span data-root>—</span></p>
-  </div>
-  <div class="step" data-step aria-live="polite"></div>
-  <figcaption class="fig__cap"><span><b>fig. 1</b> &nbsp;reconcile, then root</span><button class="replay" type="button" data-replay hidden>↻ replay</button></figcaption>
-</figure></div>
-
-<div class="col reveal"><p>Every tick stores a merkle root over the whole roster at that exact moment, so this page isn't the only place this information lives — anyone can independently prove a given handle was or wasn't in the roster when a specific tick fired, without trusting the frontend to have shown them the truth. Following is the only requirement to be paid. No wallet needed, no transaction, no form to fill in.</p>
-<p>Weight is the one thing a follower can actively change about their own entry. By default everyone is weight 1. Binding a wallet — posting the address from your handle on X, then sending a memo transaction from that wallet with the post id — lets the attestor verify both sides and write the wallet onto your roster entry. From there, weight is read from the bound wallet's balance at each tick: holding at least 0.15% of supply is weight 2, at least 0.75% is weight 3. Weight only affects how a payout splits across the window when your position comes up. It never affects whether you're in the roster at all.</p></div>
-
-<div class="col"><dl class="gloss ">
-<div><dt>position</dt><dd>the order this handle followed, oldest first</dd></div>
-<div><dt>handle_hash</dt><dd>hash of the lowercase handle, how the entry is keyed</dd></div>
-<div><dt>bound_wallet</dt><dd>wallet bound to this handle, if any</dd></div>
-<div><dt>weight</dt><dd>1 unbound, 2 at 0.15% of supply, 3 at 0.75%</dd></div>
-</dl>
-<div class="tbl-wrap wide"><table class="rules">
-<thead><tr><th>rule</th><th>detail</th></tr></thead>
-<tbody>
-<tr><td>roster source</td><td>the project's X follower list, read live by the attestor</td></tr>
-<tr><td>entry key</td><td>pda ["roster", handle_hash]</td></tr>
-<tr data-step="1"><td>new follower</td><td>appended at the back of the roster</td></tr>
-<tr data-step="2"><td>unfollow</td><td>entry removed</td></tr>
-<tr data-step="3"><td>refollow</td><td>treated as a new follower, appended at the back</td></tr>
-<tr data-step="4"><td>roster root</td><td>stored on every tick, proves membership at that moment</td></tr>
-<tr><td>bind, step one</td><td>the handle posts the wallet address on X</td></tr>
-<tr><td>bind, step two</td><td>the wallet sends a memo transaction containing that post id</td></tr>
-<tr><td>attestor</td><td>verifies the post author and the memo, writes bound_wallet</td></tr>
-<tr><td>weight 1</td><td>unbound, or bound and holding under 0.15% of supply</td></tr>
-<tr><td>weight 2</td><td>bound and holding at least 0.15% of supply at the tick slot</td></tr>
-<tr><td>weight 3</td><td>bound and holding at least 0.75% of supply at the tick slot</td></tr>
-</tbody></table></div></div>
+<div class="col"><p>The attestor reads the live follower list and reconciles it against what is onchain. New followers are appended at the back. Anyone who unfollowed is removed, and the last entry moves into the gap so positions stay dense. Every removal is also written as a numbered removal record, in order. zhalve_claims reads those records to stop removed followers from claiming. Someone who unfollows and follows again comes back as a new entry at the back.</p>
+<p>Every tick stores a root over the whole roster at that moment, so anyone can later prove a handle was or was not on the roster when a tick fired.</p>
+<p>A follower can bind two things to their entry by posting them from the handle on X. The attestor checks the post and writes them onchain with the post id.</p>
+<p>The first is a wallet. It sets the follower&#x27;s tier: holding at least 0.15% of supply is tier 2, at least 0.75% is tier 3. Everyone else, and anyone without a wallet, is tier 1. The tier is read when the follower is registered into a round, not at every tick. The wallet is public and so is the tier.</p>
+<p>The second is a claim commitment: Poseidon(1, secret), where the secret is 31 random bytes only the follower holds. The commitment is public and tied to the handle. It does not reveal which claim belongs to which handle. A follower without a commitment cannot claim.</p>
+<dl class="gloss"><div><dt>position</dt><dd>the order this handle entered the roster</dd></div><div><dt>handle_hash</dt><dd>hash of the lowercase handle, how the entry is keyed</dd></div><div><dt>bound_wallet</dt><dd>wallet bound to this handle, if any. sets the tier</dd></div><div><dt>commitment</dt><dd>Poseidon(1, secret), stored beside the entry</dd></div><div><dt>tier</dt><dd>1 unbound or under 0.15% of supply, 2 from 0.15%, 3 from 0.75%</dd></div></dl>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>roster source</td><td>the project&#x27;s X follower list, read by the attestor</td></tr><tr><td>entry key</td><td>pda [&quot;roster&quot;, handle_hash]</td></tr><tr><td>new follower</td><td>appended at the back</td></tr><tr><td>unfollow</td><td>entry removed, last entry moves into the gap, removal record written</td></tr><tr><td>refollow</td><td>a new entry at the back. the old commitment stays and counts again. a new bind replaces it</td></tr><tr><td>roster root</td><td>stored on every tick</td></tr><tr><td>bind</td><td>the handle posts the wallet and the commitment on X. the attestor checks the post and writes both with the post id</td></tr><tr><td>attestor</td><td>the only signer for upsert, remove and bind. trusted to check posts</td></tr><tr><td>tier read</td><td>at registration into a round, from the bound wallet&#x27;s balance then</td></tr><tr><td>removal records</td><td>pda [&quot;removal&quot;, index]. zhalve_claims processes them before a round opens</td></tr></tbody></table></div></div>
 </main>
 <footer class="foot">
-  <span>z/halve</span>
-  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/zec">zec</a><a href="/program">program</a></nav>
+  <span>z/halve · not deployed · not audited</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/private">private</a><a href="/circuits">circuits</a><a href="/relayer">relayer</a><a href="/novelty">novelty</a><a href="/limits">limits</a><a href="/status">status</a><a href="/program">program</a></nav>
 </footer>
-<script src="/assets/data/state.js"></script>
 <script src="/assets/site.js" defer></script>
-<script src="/assets/js/roster.js" defer></script>
 </body>
 </html>

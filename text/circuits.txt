@@ -1,0 +1,62 @@
+CIRCUITS
+--------
+One circuit, claim.circom, written in circom and proved with Groth16 through snarkjs. zhalve_claims verifies the proofs onchain with groth16-solana. The numbers on this page are checked against the compiled files by tests.
+
+WHAT A PROOF SAYS
+-----------------
+The prover knows a secret such that Poseidon(Poseidon(1, secret), tier) is a leaf under root, that leaf is not zero, and nullifier = Poseidon(2, secret, round). It does not say which leaf. tier is 1, 2 or 3. round fits in 32 bits, fee in 64 bits, each pubkey half in 128 bits. recipient, relayer and fee are public inputs, so a proof made for one value does not verify for another.
+
+PUBLIC INPUTS
+-------------
+#    input           from
+1    root            the tier tree account. never the caller
+2    nullifier       the caller. must be below the field modulus
+3    round           the instruction
+4    tier            the instruction
+5    recipient_hi    first 16 bytes of the recipient pubkey
+6    recipient_lo    last 16 bytes of the recipient pubkey
+7    relayer_hi      first 16 bytes of the relayer pubkey
+8    relayer_lo      last 16 bytes of the relayer pubkey
+9    fee             the instruction
+
+rule              detail
+private inputs    41: the secret, 20 path hashes, 20 path bits
+constraints       12661 (6286 non-linear, 6375 linear)
+wires             12683
+tree depth        20
+powers of tau     2^14
+hash              Poseidon over BN254, circomlib parameters. the same parameters run onchain
+                  through the sol_poseidon syscall
+proof time        about 1.4 s in Node with snarkjs. one measurement, not a benchmark
+
+VERIFYING KEY
+-------------
+rule              detail
+key file          circuits/build/verification_key.json
+sha256            71ef978ae017bd9f97582d7de57e297a6a306fa5e41f0614a1d8aabcf6ab74b3
+in the program    programs/zhalve_claims/src/vk.rs, generated from the key file. a test
+                  regenerates it and compares byte for byte
+consistency       tests check the key file is the key in the proving key, and the proving
+                  key verifies against the circuit and the local powers of tau
+
+CEREMONY STATE
+--------------
+Local setup. Not a real ceremony. One machine made the powers of tau and one phase 2 contribution. Whoever ran it could have kept the toxic waste and could forge proofs that drain every open tier of a round. A multi-contributor ceremony is planned in CEREMONY.md. It is not done.
+
+rule              detail
+phase 1           local, one contribution. not the public powers of tau
+phase 2           local, one contribution
+real ceremony     not done
+consequence       the current key is for tests only
+
+TESTS
+-----
+rule              detail
+honest proofs     every tier, first, middle and last leaf, fee 0 and the largest fee
+refused inputs    wrong secret, root, nullifier, round or tier; zeroed leaf; values out of
+                  range; a path bit of 2
+forged witnesses  built by hand and checked against every constraint: another nullifier,
+                  another round, a tier 1 leaf claiming tier 2, a foreign root, a zero leaf,
+                  out-of-range values. all fail
+no free wire      changing any single wire of a valid witness breaks a constraint
+binding           changing any of the nine public inputs makes verification fail

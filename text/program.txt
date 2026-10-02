@@ -1,0 +1,93 @@
+PROGRAM
+-------
+Two programs. Every number the other pages show comes from their accounts. Nothing is deployed, so none of these accounts exist on any cluster yet.
+
+zhalve            Q77PgQ7norSoeP8vEur5hJwxwjd9mFrDjAKh6w2qwWg   frozen at initialize
+zhalve_claims     JACSZ2GmkxtpM1J7QnqCbeXeNu9PjDGubrNQTcA38kSw   upgradeable until an audit
+zhalve_venue      8aqT4YHdZWEYsuGgtxF8223MeR1cSCvrc2r7n9Wc4eY9   devnet stand-in for pump.fun. not for mainnet
+
+zhalve contains no zero knowledge code. It never calls zhalve_claims and never reads its accounts. zhalve_claims reads zhalve's accounts and never writes them.
+
+ZHALVE INSTRUCTIONS
+-------------------
+rule              detail
+initialize        upgrade authority only, once. sets the attestor, coin, venue and price
+                  feed. the next instruction in the same transaction must remove the
+                  upgrade authority, so the program is frozen from the moment it is set up.
+claim_fees        permissionless. pulls the creator share from the creator vault into the
+                  clock.
+tick              permissionless. checks the trigger, buys and burns, applies the era's
+                  split, sells the payout share for usdc into outbound, writes the tick
+                  account. takes no roster accounts and pays nobody.
+advance           permissionless. once era_start is 4 weeks old, halves burn_bps, floors
+                  it at 100 bps, and moves outbound to the claims inbox. skips the
+                  transfer if the inbox is missing or unusable, and still halves.
+upsert_roster     attestor only. appends a follower and records the roster root.
+remove_roster     attestor only. removes an unfollow and writes a numbered removal record.
+bind              attestor only. writes the bound wallet and the claim commitment after
+                  verifying the X post. needs a non-zero post id.
+
+ZHALVE_CLAIMS INSTRUCTIONS
+--------------------------
+rule              detail
+initialize        anyone, once. every value is read from zhalve's state.
+open_round        anyone, during era r. creates round r and one empty tree per tier.
+register          anyone, during era r. adds a follower's leaf to their tier's tree.
+deregister        anyone. processes the next zhalve removal for a round and zeroes the
+                  removed follower's leaf.
+fund_era          anyone, during era r + 1, after every removal is processed. moves the
+                  inbox to the pool and fixes the open tiers and amounts.
+claim             anyone, during era r + 1. verifies a Groth16 proof and pays usdc.
+sweep_to_burn     anyone, from era r + 2. sells unclaimed usdc, buys the coin, burns it.
+
+ZHALVE ACCOUNTS
+---------------
+rule              detail
+state             pda ["state"]. 332 bytes. attestor, venue, roster_len, unticked_balance,
+                  tick_count, roster_root, era_start, era, burn_bps, total_burned,
+                  last_funded, total_funded, removals.
+clock             pda ["clock"]. holds sol. leaves only as the burn buy and the payout sale.
+outbound          pda ["outbound"]. holds the current era's usdc until advance.
+roster entry      pda ["roster", handle_hash]. 85 bytes. position, bound_wallet, bind_post_id.
+commitment        pda ["commitment", handle_hash]. 81 bytes. the claim commitment and its post id.
+removal           pda ["removal", index]. 57 bytes. one per removal, in order.
+tick              pda ["tick", index]. every field listed on the ticks page.
+
+ZHALVE_CLAIMS ACCOUNTS
+----------------------
+rule              detail
+config            pda ["config"]. usdc mint, coin mint, pool busy flag.
+authority         pda ["authority"]. owns the inbox, the pool and the burn account.
+inbox             pda ["inbox"]. usdc. zhalve's advance pays into it.
+pool              pda ["pool"]. usdc. one round at a time.
+round             pda ["round", r]. status, removal cursor, pool amount, live members per
+                  tier, open tiers, amounts, claimed total.
+tree              pda ["tree", r, tier]. root, next index, frontier, live members.
+registration      pda ["reg", r, handle_hash]. tier, leaf index, leaf, removed flag.
+nullifier         pda ["nullifier", r, nullifier]. exists once that nullifier has claimed.
+
+CONSTANTS
+---------
+rule              detail
+trigger floor     0.15 SOL
+burn from pool    at most 30 bps of spot (impact cap), regardless of the era's burn share
+era length        4 weeks, fixed
+burn share        100% / 50% / 25% / 12.5% / 6.25% ... halving each era, floor 1%
+swap slippage     50 bps
+tiers             1 / 2 / 3 at 0 / 0.15% / 0.75% of supply
+min anonymity     20 live members per tier before it opens (config guess)
+relayer fee cap   5% of the claim (config guess)
+tree depth        20 (1,048,576 leaves per tier per round)
+sweep dust        100 usdc base units carry into the next round
+upgrade authority zhalve: none. zhalve_claims: set until an audit
+
+LIVE STATE
+----------
+mass
+outbound
+burned
+funded
+era
+round
+pool
+claimed

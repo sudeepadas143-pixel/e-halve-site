@@ -1,0 +1,31 @@
+STATUS
+------
+Where z/halve stands. The test counts are from the last full run, recorded when this file was written.
+
+rule              detail
+deployed          nowhere. no devnet, no mainnet
+audit             not done
+ceremony          not done. the verifying key is from a local setup, not a real ceremony
+legal review      not done
+relayer           not built
+client            not built. nothing makes secrets or proofs for followers yet
+website           not updated for claims
+zhalve            built. frozen at initialize once deployed
+zhalve_claims     built. upgrade authority stays set until an audit
+circuit           built. 12661 constraints
+
+TESTS
+-----
+All passing at the last run.
+
+suite             result
+rust              18 passed (zhalve 6, zhalve_claims 12)
+litesvm           81 passing (zhalve 48, zhalve_claims 33, with real Groth16 proofs)
+circuit           21 passing
+local validator   16 passing, 1 pending. a live validator cannot let four weeks pass, so
+                  fund_era, claim and sweep_to_burn run only in LiteSVM
+
+rule              detail
+commands          npm run test:rust, test:svm, test:circuit, test:local
+untested          listed row by row in ATTACK.md
+config guesses    minimum anonymity set 20, relayer fee cap 5%

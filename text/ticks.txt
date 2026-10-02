@@ -1,0 +1,27 @@
+TICKS
+-----
+Every tick the program has made, newest first. Each row is one transaction. Every field is written by the tick instruction itself, in the same transaction that did the buying, burning and selling, so a row is a receipt, not a reconstruction.
+
+A tick fires when the clock's unticked balance is at least 0.15 SOL. reserve_before and reserve_after are the pool's SOL reserve before and after the tick's own buy. They are recorded as data. They are not the trigger.
+
+mass_before and mass_after show what the clock held going into the tick and what was left after both arms. buy_sol and burned_tokens are the burn arm's receipt. sol_usd is the Pyth price read in the same instruction. spill_sol, spill_usdc and spill_bps are the payout arm's receipt: the SOL sold, the USDC it returned into outbound, and the era's payout share. The tick pays nobody. That USDC waits in outbound until advance moves it to zhalve_claims.
+
+roster_len and roster_root are the roster as it stood at that moment.
+
+tick index                          which tick this is, in order
+era                                 which era was active
+reserve_before, reserve_after       pool SOL reserve around the tick's own buy
+mass_before, mass_after             clock balance, before and after
+buy_sol, burned_tokens              the burn arm's receipt
+sol_usd                             the Pyth price read in this instruction
+spill_sol, spill_usdc, spill_bps    the payout arm's receipt
+roster_len, roster_root             the roster at that moment
+
+rule                                detail
+source                              one account per tick, written inside the tick instruction
+trigger                             unticked_balance >= 0.15 SOL
+reserve_before, reserve_after       recorded around the buy; data, not a trigger
+buy_sol, burned_tokens              SOL spent by the burn arm, tokens burned in the same instruction
+sol_usd                             Pyth SOL/USD read in this instruction
+spill_sol, spill_usdc, spill_bps    SOL sold, USDC received into outbound, the era's payout share
+roster_len, roster_root             the roster as it stood at this tick

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>novelty · z/halve</title>
+<meta name="description" content="Most of z/halve&#x27;s privacy is borrowed.">
+<meta name="theme-color" content="#f3eee3">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Besley:wght@500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-page="novelty">
+<a class="skip" href="#main">skip to content</a>
+<header class="bar">
+  <nav class="bar__inner" aria-label="sections">
+    <a class="brand" href="/">z<span>/</span>halve</a>
+    <ul class="bar__links"><li><a href="/live">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/private">private</a></li><li><a href="/circuits">circuits</a></li><li><a href="/relayer">relayer</a></li><li><a href="/novelty" aria-current="page">novelty</a></li><li><a href="/limits">limits</a></li><li><a href="/status">status</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
+  </nav>
+</header>
+<main id="main" class="page">
+<header class="head col">
+  <p class="path">~/z-halve/<b>novelty</b></p>
+  <h1>NOVELTY</h1>
+  <p class="lede">Most of z/halve&#x27;s privacy is borrowed. This page separates what this repository puts together from the pieces it takes from earlier work. &quot;New here&quot; means new in this design, not a claim that nobody has done it anywhere.</p>
+  <p class="note">Plain text of this page: <a href="/text/novelty.txt">/text/novelty.txt</a></p>
+</header>
+
+<section class="sec col" id="new-here" aria-labelledby="new-here-h">
+  <span class="sec__label"><a href="#new-here">§1</a></span>
+  <h2 id="new-here-h">NEW HERE</h2>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>halving + claims</td><td>a burn share that halves every four weeks, with the payout share of each era paid through private claims in the next era</td></tr><tr><td>tier as the set</td><td>one tree per holder tier per round, so the anonymity set is the tier and every claim in a tier pays the same amount</td></tr><tr><td>weighted amounts</td><td>amount per tier from the pool by tier weight 1, 2, 3, fixed when the round opens, with tiers under 20 members left closed</td></tr><tr><td>roster removal</td><td>numbered removal records from the frozen program, processed in order, and a round that cannot open until every removed leaf is zeroed</td></tr><tr><td>unclaimed burns</td><td>whatever is not claimed in the window is sold and burned</td></tr><tr><td>one-way coupling</td><td>the frozen program pays into the claims inbox and never calls or reads the claims program, so the claims program cannot stop the halving or the burn</td></tr></tbody></table></div>
+</section>
+
+<section class="sec col" id="borrowed-from" aria-labelledby="borrowed-from-h">
+  <span class="sec__label"><a href="#borrowed-from">§2</a></span>
+  <h2 id="borrowed-from-h">BORROWED FROM</h2>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>Zcash</td><td>commitments to secrets, and nullifiers that mark a spend without saying which commitment it spent. introduced in the Zerocash paper (Ben-Sasson et al., 2014) that Zcash grew from</td></tr><tr><td>nullifiers</td><td>the per-round nullifier, Poseidon(2, secret, round), follows the same idea with an external value mixed in, as in Semaphore&#x27;s external nullifier</td></tr><tr><td>withdraw pattern</td><td>a deposit-tree and withdraw-with-relayer flow with recipient and fee bound into the proof, as in Tornado Cash. developers of that project have faced criminal prosecution</td></tr><tr><td>Poseidon</td><td>a hash built for zero knowledge circuits (Grassi et al.). circomlib&#x27;s parameters in the circuit, the sol_poseidon syscall onchain</td></tr><tr><td>Groth16</td><td>Jens Groth&#x27;s 2016 proof system. circom and snarkjs make the circuit and proofs. groth16-solana (Light Protocol) verifies onchain with Solana&#x27;s alt_bn128 syscalls</td></tr><tr><td>incremental tree</td><td>the frontier Merkle tree used by deposit contracts and Tornado Cash, here with leaf removal added</td></tr><tr><td>halving</td><td>bitcoin&#x27;s block reward schedule, on a four-week clock</td></tr></tbody></table></div>
+</section>
+</main>
+<footer class="foot">
+  <span>z/halve · not deployed · not audited</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/private">private</a><a href="/circuits">circuits</a><a href="/relayer">relayer</a><a href="/novelty">novelty</a><a href="/limits">limits</a><a href="/status">status</a><a href="/program">program</a></nav>
+</footer>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

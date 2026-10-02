@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>live — z/halve</title>
-<meta name="description" content="Every number on this page comes from the same accounts the program itself reads before a tick fires. Nothing here is computed off to the side or cached with a delay worth mentioning — it's the clock's own state, read the same way the program reads it.">
+<title>live · z/halve</title>
+<meta name="description" content="Nothing is deployed, so nothing on this page has a live value yet.">
 <meta name="theme-color" content="#f3eee3">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,59 +18,27 @@
 <header class="bar">
   <nav class="bar__inner" aria-label="sections">
     <a class="brand" href="/">z<span>/</span>halve</a>
-    <ul class="bar__links"><li><a href="/live" aria-current="page">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/orders">orders</a></li><li><a href="/hand">hand</a></li><li><a href="/zec">zec</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
-    <button class="wallet" type="button" data-wallet data-state="none">[connect wallet]</button>
+    <ul class="bar__links"><li><a href="/live" aria-current="page">live</a></li><li><a href="/how">how</a></li><li><a href="/roster">roster</a></li><li><a href="/ticks">ticks</a></li><li><a href="/private">private</a></li><li><a href="/circuits">circuits</a></li><li><a href="/relayer">relayer</a></li><li><a href="/novelty">novelty</a></li><li><a href="/limits">limits</a></li><li><a href="/status">status</a></li><li><a href="/program">program</a></li><li><a href="https://x.com/" rel="external noopener" target="_blank">x</a></li></ul>
   </nav>
 </header>
 <main id="main" class="page">
 <header class="head col">
   <p class="path">~/z-halve/<b>live</b></p>
   <h1>LIVE</h1>
-  <p class="lede">Every number on this page comes from the same accounts the program itself reads before a tick fires. Nothing here is computed off to the side or cached with a delay worth mentioning — it's the clock's own state, read the same way the program reads it.</p>
+  <p class="lede">Nothing is deployed, so nothing on this page has a live value yet. Once both programs are deployed, every number here comes from the same accounts the programs read. Nothing is computed off to the side.</p>
+  <p class="note">Plain text of this page: <a href="/text/live.txt">/text/live.txt</a></p>
 </header>
 
-<div class="col"><div class="statusline wide" data-status>
-  <span><span class="dot" aria-hidden="true"></span>slot <b data-slot>—</b></span>
-  <span>read <b data-read>—</b></span>
-  <span>tick_count <b data-v="tick_count">—</b></span>
-  <span>roster_len <b data-v="roster_len">—</b></span>
-</div>
-<div class="tbl-wrap wide" style="margin-top:0"><table class="state" data-state>
-<thead><tr><th>field</th><th>value</th><th>reads</th></tr></thead>
-<tbody>
-<tr data-k="mass"><td>mass</td><td class="v" data-val="mass">—</td><td class="d">current SOL sitting in the clock, unticked</td></tr>
-<tr data-k="outbound"><td>outbound</td><td class="v" data-val="outbound">—</td><td class="d">USDC in the outbound vault, awaiting settlement</td></tr>
-<tr data-k="burned in total"><td>burned in total</td><td class="v" data-val="burned in total">—</td><td class="d">cumulative tokens burned since genesis</td></tr>
-<tr data-k="paid in total"><td>paid in total</td><td class="v" data-val="paid in total">—</td><td class="d">cumulative USDC paid out since genesis</td></tr>
-<tr data-k="cursor"><td>cursor</td><td class="v" data-val="cursor">—</td><td class="d">current position in the roster ring</td></tr>
-<tr data-k="era"><td>era</td><td class="v" data-val="era">—</td><td class="d">current era number</td></tr>
-<tr data-k="burn share"><td>burn share</td><td class="v" data-val="burn share">—</td><td class="d">current <code>burn_bps</code>, halves each era, floors at 100 bps</td></tr>
-<tr data-k="next era"><td>next era</td><td class="v" data-val="next era">—</td><td class="d">time remaining until advance can be called</td></tr>
-</tbody></table></div></div>
-
-<div class="col reveal" style="padding-top:1.5rem"><p>Mass is what the clock is currently holding, unticked. It only grows through <code>claim_fees</code> and only shrinks through a tick, so between ticks this number is a direct measure of how much fee volume has landed since the last one fired. Outbound is the mirror of that on the payout side — USDC sitting in the outbound vault, written by ticks, released only by settle. If outbound is growing faster than paid, orders are backing up faster than the hand is clearing them.</p>
-<p>Burned in total and paid in total are running sums, not snapshots — every tick adds to burned, every settled order adds to paid. Together they're the whole history of the split in two numbers: how much scarcer the coin has gotten against how many real dollars have actually reached followers.</p>
-<p>Cursor and era describe where the mechanism is in its own cycle. Cursor is a position on the roster ring — it tells you whose turn is coming, not just that the ball has been rolling. Era is a plain count, but it's the number that decides everything about the current split: burn share is derived from it directly, halving each time advance is called, floored at 100 bps so burning never fully stops. Next era is the honest version of "when does this change" — the time remaining until advance becomes callable, not a promise about when someone will actually call it.</p></div>
-
-<div class="col"><div class="tbl-wrap wide"><table class="rules">
-<thead><tr><th>rule</th><th>detail</th></tr></thead>
-<tbody>
-<tr><td>mass</td><td>state.unticked_balance, live</td></tr>
-<tr><td>outbound</td><td>outbound vault balance, live</td></tr>
-<tr><td>burned in total</td><td>sum of burned_tokens across every tick</td></tr>
-<tr><td>paid in total</td><td>sum of settled order amounts across every order</td></tr>
-<tr><td>cursor</td><td>state.cursor</td></tr>
-<tr><td>era</td><td>state.era_start, derived</td></tr>
-<tr><td>burn share</td><td>10000 / 2^era, floored at 100</td></tr>
-<tr><td>next era</td><td>max(0, era_start + 4 weeks - now)</td></tr>
-</tbody></table></div></div>
+<div class="col"><p>Mass is what the clock holds, unticked. It grows only through claim_fees and shrinks only through a tick. Outbound is the USDC the payout arm has collected this era. It grows with each tick and goes to zero at advance, when it moves to the claims inbox.</p>
+<p>Burned in total counts the coin burned by ticks and by sweeps. Funded in total counts the USDC advance has moved to claims. Claimed counts what followers have taken from the current round. The gap between a round&#x27;s pool and its claimed total is what the sweep will burn.</p>
+<p>Era decides the split. The burn share halves at each advance and floors at 100 bps. Next era is the time until advance becomes callable, not a promise that someone will call it.</p>
+<dl class="gloss"><div><dt>mass</dt><dd>current SOL in the clock, unticked</dd></div><div><dt>outbound</dt><dd>USDC collected this era, waiting for advance</dd></div><div><dt>burned in total</dt><dd>coin burned by ticks, plus coin burned by sweeps</dd></div><div><dt>funded in total</dt><dd>USDC moved to zhalve_claims, all time</dd></div><div><dt>era</dt><dd>current era number</dd></div><div><dt>burn share</dt><dd>current burn_bps, halves each era, floors at 100 bps</dd></div><div><dt>next era</dt><dd>time until advance can be called</dd></div><div><dt>round</dt><dd>the round open for claims, and its status</dd></div><div><dt>pool</dt><dd>USDC in the claims pool</dd></div><div><dt>claimed</dt><dd>USDC paid out of the current round, and the number of claims</dd></div><div><dt>tiers</dt><dd>live members per tier, which tiers opened, and what one claim pays</dd></div></dl>
+<div class="tbl-wrap wide dense"><table class="rules"><thead><tr><th>rule</th><th>detail</th></tr></thead><tbody><tr><td>mass</td><td>zhalve state.unticked_balance</td></tr><tr><td>outbound</td><td>zhalve outbound vault balance</td></tr><tr><td>burned in total</td><td>zhalve state.total_burned plus the sum of round.burned_tokens</td></tr><tr><td>funded in total</td><td>zhalve state.total_funded</td></tr><tr><td>era</td><td>zhalve state.era</td></tr><tr><td>burn share</td><td>zhalve state.burn_bps</td></tr><tr><td>next era</td><td>max(0, era_start + 4 weeks - now)</td></tr><tr><td>round</td><td>zhalve_claims config.pool_round and round.status</td></tr><tr><td>pool</td><td>zhalve_claims pool balance</td></tr><tr><td>claimed</td><td>round.claimed_total and round.claims</td></tr><tr><td>tiers</td><td>round.live_at_fund, round.open, round.amounts</td></tr></tbody></table></div></div>
 </main>
 <footer class="foot">
-  <span>z/halve</span>
-  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/orders">orders</a><a href="/hand">hand</a><a href="/zec">zec</a><a href="/program">program</a></nav>
+  <span>z/halve · not deployed · not audited</span>
+  <nav aria-label="footer"><a href="/live">live</a><a href="/how">how</a><a href="/roster">roster</a><a href="/ticks">ticks</a><a href="/private">private</a><a href="/circuits">circuits</a><a href="/relayer">relayer</a><a href="/novelty">novelty</a><a href="/limits">limits</a><a href="/status">status</a><a href="/program">program</a></nav>
 </footer>
-<script src="/assets/data/state.js"></script>
 <script src="/assets/site.js" defer></script>
-<script src="/assets/js/live.js" defer></script>
 </body>
 </html>
